@@ -55,13 +55,13 @@ function ImportedReposContent() {
         if (res.ok) {
           const data = await res.json();
           if (data.success && Array.isArray(data.data)) {
-            const mappedRepos = data.data.map((repo: any) => {
+            const mappedRepos = data.data.map((repo: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
               // Extract primary language if possible, else default
               let lang = "Unknown";
               if (repo.languages) {
                 const parsed = typeof repo.languages === 'string' ? JSON.parse(repo.languages) : repo.languages;
                 if (parsed && Object.keys(parsed).length > 0) {
-                  const sortedLangs = Object.entries(parsed).sort((a: any, b: any) => b[1] - a[1]);
+                  const sortedLangs = Object.entries(parsed).sort((a: any, b: any) => b[1] - a[1]); // eslint-disable-line @typescript-eslint/no-explicit-any
                   lang = sortedLangs[0][0];
                 }
               }

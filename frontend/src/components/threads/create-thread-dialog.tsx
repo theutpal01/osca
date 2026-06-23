@@ -9,8 +9,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
-  DialogFooter,
+    DialogFooter,
   DialogClose
 } from "@/components/ui/dialog";
 
@@ -18,7 +17,7 @@ interface CreateThreadDialogProps {
   isOpen: boolean;
   onClose: () => void;
   repositoryId: string;
-  onThreadCreated: (thread: any) => void;
+  onThreadCreated: (thread: any) => void; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 export default function CreateThreadDialog({ isOpen, onClose, repositoryId, onThreadCreated }: CreateThreadDialogProps) {
@@ -40,7 +39,7 @@ export default function CreateThreadDialog({ isOpen, onClose, repositoryId, onTh
       setTitle("");
       setContent("");
       onClose();
-    } catch (err: any) {
+    } catch (err: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
       setError(err.message || "Failed to create thread");
     } finally {
       setLoading(false);

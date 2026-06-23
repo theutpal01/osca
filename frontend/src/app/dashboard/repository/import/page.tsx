@@ -94,7 +94,7 @@ function ImportContent() {
               Importing <span className="font-serif italic font-medium text-neutral-200">Repository</span>
             </h1>
             <p className="text-neutral-400 text-sm md:text-base font-light max-w-lg mx-auto">
-              This process takes a little time. We are thoroughly scanning the repository's architecture, matching it against your interests, and generating personalized recommendations.
+              This process takes a little time. We are thoroughly scanning the repository&apos;s architecture, matching it against your interests, and generating personalized recommendations.
             </p>
           </div>
 

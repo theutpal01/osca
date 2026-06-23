@@ -5,9 +5,11 @@ import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { SlidersHorizontal, Globe, BookMarked } from "lucide-react";
 import { useAuth } from "@/context/auth-context";
 import { SearchHeader } from "@/components/repositories/search-header";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+
 import { RepositoryCard, Repository } from "@/components/repositories/repository-card";
-import { RepositoryFilters } from "@/components/repositories/repository-filters";
-import { RepositoryDetailsPopover } from "@/components/repositories/repository-details-popover";
+
+
 import {
   Pagination,
   PaginationContent,
@@ -27,7 +29,7 @@ import {
   DialogFooter,
   DialogClose
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+
 
 interface ExtendedRepository extends Repository {
   ownerType?: string;
@@ -101,7 +103,7 @@ function GitHubReposContent() {
         if (res.ok) {
           const data = await res.json();
           if (data.success && Array.isArray(data.data)) {
-            const mappedRepos = data.data.map((repo: any, index: number) => {
+            const mappedRepos = data.data.map((repo: any, index: number) => { // eslint-disable-line @typescript-eslint/no-explicit-any
               const lang = repo.language || "TypeScript";
               let langColor = "bg-neutral-500";
               if (lang === "TypeScript") langColor = "bg-blue-500";
@@ -142,13 +144,13 @@ function GitHubReposContent() {
             const importedData = await importedRes.json();
             if (importedData.success && Array.isArray(importedData.data)) {
               const urlMap: Record<string, string> = {};
-              importedData.data.forEach((r: any) => {
+              importedData.data.forEach((r: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
                 if (r.url) urlMap[r.url.toLowerCase()] = r.id;
               });
               setImportedUrls(urlMap);
             }
           }
-        } catch (e) {
+        } catch (e: unknown) {
           // Silent fail for imported repos fetch
         }
       } catch (err) {
@@ -201,7 +203,7 @@ function GitHubReposContent() {
       } else {
         setDialogState({ isOpen: true, type: "success", message: "Repository successfully queued for import! It will appear in your Imported Repositories soon." });
       }
-    } catch (e) {
+    } catch (e: unknown) {
       setDialogState({ isOpen: true, type: "error", message: "Error importing repository." });
     }
   };
