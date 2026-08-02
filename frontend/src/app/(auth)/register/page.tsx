@@ -1,12 +1,12 @@
 export default function RegisterPage() {
   return (
-    <div className="max-w-md mx-auto space-y-8">
+    <div className="max-w-md mx-auto px-4 sm:px-6 space-y-6 sm:space-y-8">
       <div>
-        <h1 className="text-3xl font-bold text-slate-900 mb-2">Register</h1>
-        <p className="text-slate-600">Create a new account</p>
+        <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-2">Register</h1>
+        <p className="text-sm sm:text-base text-slate-600">Create a new account</p>
       </div>
 
-      <div className="p-6 border border-slate-200 rounded-lg bg-white shadow-sm space-y-4">
+      <div className="p-4 sm:p-6 border border-slate-200 rounded-lg bg-white shadow-sm space-y-4">
         <div>
           <label className="block text-sm font-medium text-slate-900 mb-2">
             Email
@@ -14,7 +14,7 @@ export default function RegisterPage() {
           <input
             type="email"
             placeholder="you@example.com"
-            className="w-full px-3 py-2 border border-slate-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-slate-500"
+            className="w-full px-3 py-2.5 border border-slate-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-slate-500"
           />
         </div>
 
@@ -25,11 +25,11 @@ export default function RegisterPage() {
           <input
             type="password"
             placeholder="••••••••"
-            className="w-full px-3 py-2 border border-slate-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-slate-500"
+            className="w-full px-3 py-2.5 border border-slate-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-slate-500"
           />
         </div>
 
-        <button className="w-full px-4 py-2 bg-slate-900 text-white rounded-md text-sm font-medium hover:bg-slate-700 transition-colors">
+        <button className="w-full px-4 py-2.5 bg-slate-900 text-white rounded-md text-sm font-medium hover:bg-slate-700 transition-colors">
           Sign Up
         </button>
       </div>

@@ -83,7 +83,6 @@ function GitHubReposContent() {
     internalId?: string;
   }>({ isOpen: false, type: null });
 
-  // Debounced search sync to URL
   useEffect(() => {
     if (searchQuery.trim() === queryParam.trim()) return;
 
@@ -150,7 +149,6 @@ function GitHubReposContent() {
         setError("Failed to load GitHub repositories.");
       }
 
-      // Also fetch imported repositories to check if they are already imported
       try {
         const importedRes = await fetch(`${API_URL}/repositories?limit=100`, { headers: { Authorization: `Bearer ${token}` } });
         if (importedRes.ok) {
@@ -164,7 +162,6 @@ function GitHubReposContent() {
           }
         }
       } catch {
-        // Silent fail for imported repos fetch
       }
     } catch (err) {
       console.error("Error fetching repositories:", err);
@@ -244,60 +241,60 @@ function GitHubReposContent() {
   };
 
   return (
-    <div className="max-w-7xl w-full mx-auto flex flex-col select-none relative space-y-10 pb-16">
-      {/* Decorative background gradients */}
-      <div className="absolute top-0 inset-x-0 h-96 bg-gradient-to-b from-emerald-500/5 to-transparent pointer-events-none blur-3xl -z-10" />
+    <div className="max-w-7xl w-full mx-auto flex flex-col select-none relative space-y-6 sm:space-y-8 lg:space-y-10 px-4 sm:px-6 lg:px-8 pb-10 sm:pb-12 lg:pb-16">
+      <div className="absolute top-0 inset-x-0 h-72 sm:h-80 lg:h-96 bg-gradient-to-b from-emerald-500/5 to-transparent pointer-events-none blur-3xl -z-10" />
 
-      {/* Search Header */}
       <SearchHeader searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
 
-      <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-        <div className="flex items-center justify-between border-b border-neutral-800/50 pb-5 sticky top-0 z-20 shadow-[0_4px_30px_rgba(0,0,0,0.1)]">
-          <div className="flex items-center gap-3 mb-2">
-            <label className="flex items-center gap-3 text-sm text-neutral-400 font-medium hover:text-neutral-200 cursor-pointer select-none transition-colors group">
-              <div className="relative flex items-center">
+      <div className="space-y-4 sm:space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <div className="flex flex-col gap-3 sm:gap-4 md:flex-row md:items-center md:justify-between border-b border-neutral-800/50 pb-4 sm:pb-5 sticky top-0 z-20 shadow-[0_4px_30px_rgba(0,0,0,0.1)]">
+          <div className="flex items-start sm:items-center gap-3">
+            <label className="flex items-start sm:items-center gap-3 text-sm text-neutral-400 font-medium hover:text-neutral-200 cursor-pointer select-none transition-colors group leading-relaxed">
+              <div className="relative flex items-center pt-0.5 sm:pt-0 shrink-0">
                 <Checkbox checked={includeOrg} onCheckedChange={handleIncludeOrgChange} className="border-neutral-600 data-[state=checked]:bg-emerald-500 data-[state=checked]:border-emerald-500" />
               </div>
-              Include Organization Repositories
+              <span>Include Organization Repositories</span>
             </label>
           </div>
-          <button className="flex items-center gap-2 px-4 py-2 rounded-xl border border-neutral-800 bg-neutral-900/50 hover:bg-neutral-800 hover:text-emerald-400 hover:border-emerald-500/30 text-neutral-300 text-sm font-medium transition-all duration-300 mb-2 shadow-sm">
-            <SlidersHorizontal className="w-4 h-4" />
+
+          <button className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-neutral-800 bg-neutral-900/50 hover:bg-neutral-800 hover:text-emerald-400 hover:border-emerald-500/30 text-neutral-300 text-sm font-medium transition-all duration-300 shadow-sm">
+            <SlidersHorizontal className="w-4 h-4 shrink-0" />
             Filters
           </button>
         </div>
 
         {loading ? (
-          <div className="flex items-center justify-center py-32">
+          <div className="flex items-center justify-center py-20 sm:py-24 lg:py-32">
             <div className="relative">
-              <div className="w-12 h-12 border-4 border-emerald-500/20 border-t-emerald-500 rounded-full animate-spin"></div>
-              <div className="absolute inset-0 w-12 h-12 bg-emerald-500/10 rounded-full blur-xl animate-pulse"></div>
+              <div className="w-10 h-10 sm:w-12 sm:h-12 border-4 border-emerald-500/20 border-t-emerald-500 rounded-full animate-spin"></div>
+              <div className="absolute inset-0 w-10 h-10 sm:w-12 sm:h-12 bg-emerald-500/10 rounded-full blur-xl animate-pulse"></div>
             </div>
           </div>
         ) : error ? (
           <ErrorState message={error} onRetry={fetchRepos} />
         ) : repos.length > 0 ? (
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 pt-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 xl:gap-8 pt-2 sm:pt-4 lg:pt-6">
             {repos.map((repo) => (
               <RepositoryCard key={repo.id} repo={repo} mode="import" onAction={handleImport} />
             ))}
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center py-32 border border-neutral-800/50 rounded-3xl bg-neutral-900/20 backdrop-blur-sm">
-            <Globe className="w-12 h-12 text-neutral-700 mb-4" />
-            <p className="text-neutral-400 text-base font-medium">No repositories found matching your query.</p>
-            <p className="text-neutral-600 text-sm mt-2">Try adjusting your search terms or filters.</p>
+          <div className="flex flex-col items-center justify-center py-20 sm:py-24 lg:py-32 px-4 sm:px-6 border border-neutral-800/50 rounded-2xl sm:rounded-3xl bg-neutral-900/20 backdrop-blur-sm text-center">
+            <Globe className="w-10 h-10 sm:w-12 sm:h-12 text-neutral-700 mb-4" />
+            <p className="text-neutral-400 text-sm sm:text-base font-medium">No repositories found matching your query.</p>
+            <p className="text-neutral-600 text-sm mt-2 max-w-md">Try adjusting your search terms or filters.</p>
           </div>
         )}
 
         {!loading && !error && pagination.totalPages > 1 && (
-          <Pagination className="mt-8">
-            <PaginationContent>
+          <Pagination className="mt-6 sm:mt-8 overflow-x-auto">
+            <PaginationContent className="flex-nowrap min-w-max sm:min-w-0">
               <PaginationItem>
                 <PaginationPrevious onClick={() => handlePageChange(pagination.page - 1)} disabled={pagination.page === 1} />
               </PaginationItem>
+
               {getPageNumbers().map((pageNumber, idx) => (
-                <PaginationItem key={idx}>
+                <PaginationItem key={idx} className="hidden sm:inline-flex">
                   {pageNumber === "ellipsis-start" || pageNumber === "ellipsis-end" ? (
                     <PaginationEllipsis />
                   ) : (
@@ -307,6 +304,13 @@ function GitHubReposContent() {
                   )}
                 </PaginationItem>
               ))}
+
+              <PaginationItem className="sm:hidden">
+                <PaginationLink isActive>
+                  {pagination.page} / {pagination.totalPages}
+                </PaginationLink>
+              </PaginationItem>
+
               <PaginationItem>
                 <PaginationNext onClick={() => handlePageChange(pagination.page + 1)} disabled={pagination.page === pagination.totalPages} />
               </PaginationItem>
@@ -316,7 +320,7 @@ function GitHubReposContent() {
       </div>
 
       <Dialog open={dialogState.isOpen} onOpenChange={(isOpen) => setDialogState(prev => ({ ...prev, isOpen }))}>
-        <DialogContent className="sm:max-w-[425px] bg-neutral-950 border border-neutral-800 shadow-2xl text-neutral-100 rounded-2xl p-6">
+        <DialogContent className="w-[calc(100%-2rem)] max-w-[425px] sm:max-w-[425px] bg-neutral-950 border border-neutral-800 shadow-2xl text-neutral-100 rounded-2xl p-4 sm:p-6">
           <DialogHeader className="space-y-3 pb-4 border-b border-neutral-800/50">
             <div className="flex items-center gap-3">
               {dialogState.type === "success" ? (
@@ -332,7 +336,7 @@ function GitHubReposContent() {
                   <BookMarked className="w-4 h-4 text-neutral-300" />
                 </div>
               )}
-              <DialogTitle className="text-lg font-medium tracking-tight text-neutral-100">
+              <DialogTitle className="text-base sm:text-lg font-medium tracking-tight text-neutral-100">
                 {dialogState.type === "success" ? "Success" :
                  dialogState.type === "error" ? "Import Failed" : "Already Imported"}
               </DialogTitle>
@@ -345,16 +349,16 @@ function GitHubReposContent() {
             </DialogDescription>
           </div>
 
-          <DialogFooter className="sm:justify-end gap-3 pt-2">
+          <DialogFooter className="flex-col sm:flex-row sm:justify-end gap-3 pt-2">
             <DialogClose asChild>
-              <button className="px-4 py-2 rounded-lg border border-neutral-800 hover:bg-neutral-900 text-neutral-300 text-sm font-medium transition-colors">
+              <button className="w-full sm:w-auto px-4 py-2 rounded-lg border border-neutral-800 hover:bg-neutral-900 text-neutral-300 text-sm font-medium transition-colors">
                 Cancel
               </button>
             </DialogClose>
             {dialogState.type === "already_imported" && dialogState.internalId && (
               <button
                 onClick={() => router.push(`/dashboard/repository/${dialogState.internalId}`)}
-                className="px-4 py-2 rounded-lg bg-emerald-500 text-neutral-950 hover:bg-emerald-400 text-sm font-medium transition-colors"
+                className="w-full sm:w-auto px-4 py-2 rounded-lg bg-emerald-500 text-neutral-950 hover:bg-emerald-400 text-sm font-medium transition-colors"
               >
                 Open Repository
               </button>
@@ -369,7 +373,7 @@ function GitHubReposContent() {
 export default function RepositoriesPage() {
   return (
     <Suspense fallback={
-      <div className="flex items-center justify-center h-full">
+      <div className="flex items-center justify-center h-full min-h-[40vh] px-4">
         <div className="w-6 h-6 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
       </div>
     }>

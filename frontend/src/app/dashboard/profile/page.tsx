@@ -31,13 +31,13 @@ interface FullUser {
 }
 
 const GithubIcon = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg 
-    viewBox="0 0 24 24" 
-    fill="none" 
-    stroke="currentColor" 
-    strokeWidth="2" 
-    strokeLinecap="round" 
-    strokeLinejoin="round" 
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
     {...props}
   >
     <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
@@ -56,7 +56,6 @@ export default function ProfilePage() {
 
   const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
 
-  // Fetch full user details (including contributorProfile)
   const fetchProfile = useCallback(async (silent = false) => {
     if (!authUser?.id || !token) return;
     try {
@@ -89,7 +88,6 @@ export default function ProfilePage() {
     fetchProfile();
   }, [fetchProfile]);
 
-  // Handle triggering contributor profile analysis
   const handleAnalyzeProfile = useCallback(async () => {
     if (!authUser?.id || !token) return;
     try {
@@ -108,7 +106,7 @@ export default function ProfilePage() {
         const interval = setInterval(async () => {
           attempts++;
           await fetchProfile(true);
-          
+
           if (attempts >= 12) {
             clearInterval(interval);
             setAnalyzing(false);
@@ -124,7 +122,6 @@ export default function ProfilePage() {
     }
   }, [authUser?.id, token, API_URL, fetchProfile]);
 
-  // Auto-sync if profile is loaded but has no analytics scores
   useEffect(() => {
     if (profile && !profile.contributorProfile && !analyzing && !hasTriggeredSync.current) {
       hasTriggeredSync.current = true;
@@ -134,48 +131,47 @@ export default function ProfilePage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+      <div className="flex items-center justify-center min-h-[300px] sm:min-h-[400px] px-4">
+        <div className="w-7 h-7 sm:w-8 sm:h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
 
   if (error) {
-  return (
-    <div className="max-w-7xl mx-auto mt-12">
-      <ErrorState message={error} onRetry={() => fetchProfile()} />
-    </div>
-  );
-}
+    return (
+      <div className="max-w-7xl mx-auto mt-8 sm:mt-12 px-4 sm:px-6 lg:px-8">
+        <ErrorState message={error} onRetry={() => fetchProfile()} />
+      </div>
+    );
+  }
 
   const hasAnalytics = !!profile?.contributorProfile;
   const analytics = profile?.contributorProfile;
 
   return (
-    <div className="max-w-7xl w-full mx-auto space-y-8 pb-16 pt-4 select-none">
-      
-      {/* Profile Header Banner */}
-      <div className="p-8 rounded-3xl border border-white/[0.04] bg-neutral-950/20 backdrop-blur-md flex flex-col md:flex-row items-center md:items-start justify-between gap-6">
-        <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
-          <Avatar className="w-20 h-20 border border-white/[0.08] shadow-2xl">
+    <div className="max-w-7xl w-full mx-auto space-y-6 sm:space-y-8 pb-10 sm:pb-12 lg:pb-16 pt-4 px-4 sm:px-6 lg:px-8 select-none">
+
+      <div className="p-5 sm:p-6 lg:p-8 rounded-2xl sm:rounded-3xl border border-white/[0.04] bg-neutral-950/20 backdrop-blur-md flex flex-col md:flex-row items-center md:items-start justify-between gap-5 sm:gap-6">
+        <div className="flex flex-col md:flex-row items-center md:items-start gap-5 sm:gap-6 w-full">
+          <Avatar className="w-16 h-16 sm:w-20 sm:h-20 border border-white/[0.08] shadow-2xl shrink-0">
             {profile?.avatarUrl && <AvatarImage src={profile.avatarUrl} alt={profile.name} />}
-            <AvatarFallback className="bg-emerald-500/5 text-emerald-400 text-2xl font-light">
+            <AvatarFallback className="bg-emerald-500/5 text-emerald-400 text-xl sm:text-2xl font-light">
               {profile?.name?.charAt(0) || "U"}
             </AvatarFallback>
           </Avatar>
-          
-          <div className="text-center md:text-left space-y-2.5">
+
+          <div className="text-center md:text-left space-y-2.5 min-w-0">
             <div>
-              <h1 className="text-2xl font-normal text-white tracking-tight">{profile?.name}</h1>
-              <p className="text-xs text-neutral-500 font-light flex items-center justify-center md:justify-start gap-1 mt-0.5">
-                <GithubIcon className="w-3.5 h-3.5" />
+              <h1 className="text-xl sm:text-2xl font-normal text-white tracking-tight break-words">{profile?.name}</h1>
+              <p className="text-xs text-neutral-500 font-light flex items-center justify-center md:justify-start gap-1 mt-0.5 break-all">
+                <GithubIcon className="w-3.5 h-3.5 shrink-0" />
                 @{profile?.username}
               </p>
             </div>
             {profile?.skills && profile.skills.length > 0 && (
               <div className="flex flex-wrap justify-center md:justify-start gap-1.5 pt-1">
                 {profile.skills.map((skill) => (
-                  <Badge 
+                  <Badge
                     key={skill}
                     variant="outline"
                     className="text-[10px] rounded-xl border-white/[0.06] bg-white/[0.01] text-neutral-400 font-light py-0.5 px-2 hover:border-emerald-500/20 hover:text-emerald-400 transition-colors"
@@ -189,18 +185,17 @@ export default function ProfilePage() {
         </div>
 
         {analyzing && (
-          <div className="flex flex-col items-center md:items-end space-y-1.5">
-            <div className="flex items-center gap-2 text-xs text-emerald-400">
-              <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+          <div className="flex flex-col items-center md:items-end space-y-1.5 w-full md:w-auto">
+            <div className="flex items-center gap-2 text-xs text-emerald-400 text-center md:text-right">
+              <RefreshCw className="w-3.5 h-3.5 animate-spin shrink-0" />
               <span>{analysisStatus}</span>
             </div>
           </div>
         )}
       </div>
 
-      {/* Deep Contributor Analytics */}
-      <div className="p-8 rounded-3xl border border-white/[0.04] bg-neutral-950/20 backdrop-blur-md space-y-8">
-        
+      <div className="p-5 sm:p-6 lg:p-8 rounded-2xl sm:rounded-3xl border border-white/[0.04] bg-neutral-950/20 backdrop-blur-md space-y-6 sm:space-y-8">
+
         <div className="flex items-center justify-between border-b border-white/[0.04] pb-4">
           <h2 className="text-sm font-normal text-neutral-300 tracking-wide flex items-center gap-2">
             <Sparkles className="w-4 h-4 text-emerald-400" />
@@ -209,44 +204,42 @@ export default function ProfilePage() {
         </div>
 
         {!hasAnalytics && !analyzing ? (
-          <div className="flex flex-col items-center justify-center py-16 text-center space-y-3">
+          <div className="flex flex-col items-center justify-center py-12 sm:py-16 text-center space-y-3 px-4">
             <p className="text-neutral-500 text-xs font-light">No deep analytics file found for your developer profile.</p>
             <p className="text-[11px] text-neutral-600 font-light max-w-sm">
               Please check back in a moment while we scan your profile in the background.
             </p>
           </div>
         ) : analytics ? (
-          <div className="space-y-8 relative">
+          <div className="space-y-6 sm:space-y-8 relative">
 
-            {/* Overall Index Score Banner - Minimalist Premium */}
-            <div className="relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8 p-8 rounded-3xl border border-white/[0.08] bg-neutral-950/40 hover:bg-neutral-950/60 transition-all duration-500">
-              
+            <div className="relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6 sm:gap-8 p-5 sm:p-6 lg:p-8 rounded-2xl sm:rounded-3xl border border-white/[0.08] bg-neutral-950/40 hover:bg-neutral-950/60 transition-all duration-500">
+
               <div className="space-y-3 max-w-xl relative z-10 text-center md:text-left">
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.05] border border-white/[0.08] text-neutral-300 text-[10px] font-medium tracking-widest uppercase">
                   <Sparkles className="w-3 h-3" />
                   Primary Metric
                 </div>
-                <h3 className="text-xl text-white font-light tracking-wide">Overall Code Index Rating</h3>
+                <h3 className="text-lg sm:text-xl text-white font-light tracking-wide">Overall Code Index Rating</h3>
                 <p className="text-sm text-neutral-400 font-light leading-relaxed">
                   A comprehensive, weighted index derived from your algorithmic contributions, language diversity, commit velocity, and structural code quality.
                 </p>
               </div>
-              
+
               <div className="relative z-10 flex flex-col items-center justify-center shrink-0">
-                <div className="relative flex items-center justify-center w-36 h-36 rounded-full border border-white/[0.08] bg-neutral-950/50 shadow-inner">
+                <div className="relative flex items-center justify-center w-28 h-28 sm:w-32 sm:h-32 lg:w-36 lg:h-36 rounded-full border border-white/[0.08] bg-neutral-950/50 shadow-inner">
                   <div className="absolute inset-2 rounded-full border border-dashed border-white/20 animate-[spin_60s_linear_infinite]" />
                   <div className="flex items-baseline gap-1">
-                    <span className="text-5xl font-extralight text-white tracking-tight">
+                    <span className="text-4xl sm:text-5xl font-extralight text-white tracking-tight">
                       {analytics.overallScore.toFixed(1)}
                     </span>
                   </div>
-                  <div className="absolute bottom-4 text-[10px] text-neutral-500 font-medium tracking-widest">/ 100</div>
+                  <div className="absolute bottom-3 sm:bottom-4 text-[10px] text-neutral-500 font-medium tracking-widest">/ 100</div>
                 </div>
               </div>
             </div>
 
-            {/* Sub-Metrics Grid - Premium Redesign */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative z-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 relative z-10">
               {[
                 { label: "Skill Depth", score: analytics.skillScore, desc: "Technical complexity & code variety", icon: BookOpen, color: "from-emerald-500 to-emerald-400", bg: "bg-emerald-500/10" },
                 { label: "Activity Rate", score: analytics.activityScore, desc: "Commit frequency & PR velocity", icon: RefreshCw, color: "from-emerald-500 to-emerald-400", bg: "bg-emerald-500/10" },
@@ -256,22 +249,25 @@ export default function ProfilePage() {
               ].map((metric) => {
                 const Icon = metric.icon;
                 return (
-                  <div key={metric.label} className="group flex flex-col gap-4 p-6 rounded-3xl border border-white/[0.04] bg-neutral-950/40 hover:bg-neutral-950/60 hover:border-white/[0.08] transition-all duration-300">
-                    <div className="flex items-start justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${metric.bg} border border-white/[0.05] shadow-inner`}>
+                  <div key={metric.label} className="group flex flex-col gap-4 p-5 sm:p-6 rounded-2xl sm:rounded-3xl border border-white/[0.04] bg-neutral-950/40 hover:bg-neutral-950/60 hover:border-white/[0.08] transition-all duration-300">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex items-start sm:items-center gap-3 min-w-0">
+                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${metric.bg} border border-white/[0.05] shadow-inner shrink-0`}>
                           <Icon className="w-5 h-5 text-white opacity-80" />
                         </div>
-                        <div>
+                        <div className="min-w-0">
                           <h4 className="text-sm text-neutral-200 font-medium">{metric.label}</h4>
-                          <p className="text-[11px] text-neutral-500 font-light mt-0.5">{metric.desc}</p>
+                          <p className="text-[11px] text-neutral-500 font-light mt-0.5 leading-relaxed">{metric.desc}</p>
                         </div>
                       </div>
-                      <span className="text-lg font-light text-white">{metric.score.toFixed(1)}<span className="text-neutral-600 text-xs ml-0.5">%</span></span>
+                      <span className="text-base sm:text-lg font-light text-white shrink-0">
+                        {metric.score.toFixed(1)}
+                        <span className="text-neutral-600 text-xs ml-0.5">%</span>
+                      </span>
                     </div>
-                    
+
                     <div className="w-full h-1.5 bg-neutral-900 rounded-full overflow-hidden mt-2 relative">
-                      <div 
+                      <div
                         className={`absolute top-0 left-0 h-full bg-gradient-to-r ${metric.color} rounded-full`}
                         style={{ width: `${metric.score}%` }}
                       />
@@ -283,7 +279,7 @@ export default function ProfilePage() {
 
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center py-20 text-center space-y-4">
+          <div className="flex flex-col items-center justify-center py-16 sm:py-20 text-center space-y-4 px-4">
             <RefreshCw className="w-8 h-8 text-emerald-500 animate-spin" />
             <div className="space-y-1">
               <p className="text-neutral-400 text-xs font-normal">Analyzing your GitHub contribution history...</p>
@@ -292,17 +288,14 @@ export default function ProfilePage() {
           </div>
         )}
 
-        {/* STAT SECTIONS (ALWAYS VISIBLE) */}
-        <div className="pt-8 space-y-8 border-t border-white/[0.04]">
-          {/* 3 Stat Cards Grid */}
+        <div className="pt-6 sm:pt-8 space-y-6 sm:space-y-8 border-t border-white/[0.04]">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {/* Lines of Code Added */}
-            <div className="p-5 rounded-2xl border border-white/[0.04] bg-neutral-950/40 flex flex-col items-center justify-center space-y-3">
+            <div className="p-4 sm:p-5 rounded-2xl border border-white/[0.04] bg-neutral-950/40 flex flex-col items-center justify-center space-y-3 text-center">
               <span className="text-xs text-neutral-400 font-light flex items-center gap-1.5">
                 <FileCode className="w-3.5 h-3.5" />
                 Lines of code added
               </span>
-              <div className="text-2xl font-normal text-white">
+              <div className="text-xl sm:text-2xl font-normal text-white">
                 {/* @ts-expect-error fallback handling */}
                 {analytics?.contributionHistory?.linesAdded ? `${(analytics.contributionHistory.linesAdded / 1000).toFixed(1)}k` : "48.2k"}
               </div>
@@ -312,13 +305,12 @@ export default function ProfilePage() {
               </span>
             </div>
 
-            {/* Avg PR cycle time */}
-            <div className="p-5 rounded-2xl border border-white/[0.04] bg-neutral-950/40 flex flex-col items-center justify-center space-y-3">
+            <div className="p-4 sm:p-5 rounded-2xl border border-white/[0.04] bg-neutral-950/40 flex flex-col items-center justify-center space-y-3 text-center">
               <span className="text-xs text-neutral-400 font-light flex items-center gap-1.5">
                 <GitMerge className="w-3.5 h-3.5" />
                 Avg PR cycle time
               </span>
-              <div className="text-2xl font-normal text-white">
+              <div className="text-xl sm:text-2xl font-normal text-white">
                 {/* @ts-expect-error fallback handling */}
                 {analytics?.contributionHistory?.avgPrCycleTime ? `${analytics.contributionHistory.avgPrCycleTime.toFixed(1)} d` : "1.4 d"}
               </div>
@@ -328,13 +320,12 @@ export default function ProfilePage() {
               </span>
             </div>
 
-            {/* Code review score */}
-            <div className="p-5 rounded-2xl border border-white/[0.04] bg-neutral-950/40 flex flex-col items-center justify-center space-y-3">
+            <div className="p-4 sm:p-5 rounded-2xl border border-white/[0.04] bg-neutral-950/40 flex flex-col items-center justify-center space-y-3 text-center">
               <span className="text-xs text-neutral-400 font-light flex items-center gap-1.5">
                 <UserCheck className="w-3.5 h-3.5" />
                 Code review score
               </span>
-              <div className="text-2xl font-normal text-white">
+              <div className="text-xl sm:text-2xl font-normal text-white">
                 {/* @ts-expect-error fallback handling */}
                 {analytics?.contributionHistory?.codeReviewScore ? `${analytics.contributionHistory.codeReviewScore.toFixed(1)}/5` : "4.6/5"}
               </div>
@@ -345,19 +336,17 @@ export default function ProfilePage() {
             </div>
           </div>
 
-          {/* Bottom 2-col layout */}
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
-            
-            {/* Skill Overview */}
-            <div className="md:col-span-2 p-6 rounded-3xl border border-white/[0.04] bg-neutral-950/40 hover:bg-neutral-950/60 transition-all duration-300 space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4 sm:gap-6">
+
+            <div className="md:col-span-2 p-5 sm:p-6 rounded-2xl sm:rounded-3xl border border-white/[0.04] bg-neutral-950/40 hover:bg-neutral-950/60 transition-all duration-300 space-y-5 sm:space-y-6">
               <h3 className="text-sm font-medium text-neutral-200 flex items-center gap-2">
                 <Code2 className="w-4 h-4 text-emerald-400" />
                 Skill Overview
               </h3>
-              <div className="space-y-5 pt-2">
+              <div className="space-y-5 pt-1 sm:pt-2">
                 {(() => {
                   const repExp = analytics?.repositoryExperience as { skills?: { name: string, proficiencyScore: number }[] } | undefined;
-                  const dbSkills = repExp?.skills && repExp.skills.length > 0 
+                  const dbSkills = repExp?.skills && repExp.skills.length > 0
                     ? repExp.skills.slice(0, 5).map(s => ({ name: s.name, val: Math.round(s.proficiencyScore) }))
                     : [
                         { name: "TypeScript / React", val: 91 },
@@ -366,15 +355,15 @@ export default function ProfilePage() {
                         { name: "Testing (Vitest)", val: 55 },
                         { name: "CI / DevOps", val: 42 }
                       ];
-                  
+
                   return dbSkills.map((s, i) => (
                     <div key={i} className="space-y-1.5 group cursor-default">
-                      <div className="flex items-center justify-between text-xs">
-                        <span className="text-neutral-400 group-hover:text-neutral-200 transition-colors">{s.name}</span>
-                        <span className="text-neutral-500 group-hover:text-emerald-400 transition-colors font-light">{s.val}%</span>
+                      <div className="flex items-center justify-between gap-3 text-xs">
+                        <span className="text-neutral-400 group-hover:text-neutral-200 transition-colors min-w-0 break-words">{s.name}</span>
+                        <span className="text-neutral-500 group-hover:text-emerald-400 transition-colors font-light shrink-0">{s.val}%</span>
                       </div>
                       <div className="w-full h-1 bg-neutral-900 rounded-full overflow-hidden relative">
-                        <div 
+                        <div
                           className="absolute top-0 left-0 h-full bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-full transition-all duration-1000 ease-out"
                           style={{ width: `${s.val}%` }}
                         />
@@ -385,15 +374,14 @@ export default function ProfilePage() {
               </div>
             </div>
 
-            {/* Contribution Heatmap */}
-            <div className="md:col-span-3 p-6 rounded-2xl border border-white/[0.04] bg-neutral-950/40 space-y-6 flex flex-col">
+            <div className="md:col-span-3 p-5 sm:p-6 rounded-2xl border border-white/[0.04] bg-neutral-950/40 space-y-5 sm:space-y-6 flex flex-col">
               <h3 className="text-sm font-normal text-white text-center">Contribution Statistics</h3>
-              
-              <div className="flex-1 flex items-center justify-center pt-4 overflow-x-auto custom-scrollbar">
+
+              <div className="flex-1 flex items-center justify-start sm:justify-center pt-2 sm:pt-4 overflow-x-auto custom-scrollbar">
                 <div className="min-w-max pb-2">
                   {profile?.username ? (
-                    <GitHubCalendar 
-                      username={profile.username} 
+                    <GitHubCalendar
+                      username={profile.username}
                       colorScheme="dark"
                       theme={{
                         dark: ['#121413', '#064e3b', '#059669', '#10b981', '#34d399']

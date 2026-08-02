@@ -49,10 +49,10 @@ export default function CreateThreadDialog({ isOpen, onClose, owner, repo, onThr
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-[500px] bg-neutral-950 border border-neutral-800 shadow-2xl text-neutral-100 rounded-2xl p-6">
+      <DialogContent className="sm:max-w-[500px] bg-neutral-950 border border-neutral-800 shadow-2xl text-neutral-100 rounded-2xl p-5 sm:p-6">
         <DialogHeader className="space-y-3 pb-4 border-b border-neutral-800/50">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20">
+            <div className="w-8 h-8 rounded-full bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 shrink-0">
               <MessageSquarePlus className="w-4 h-4 text-emerald-400" />
             </div>
             <DialogTitle className="text-lg font-medium tracking-tight text-neutral-100">

@@ -22,23 +22,23 @@ interface CollaborationCardProps {
 
 export function CollaborationCard({ collaboration }: CollaborationCardProps) {
   return (
-    <div className="bg-[#0A0A0A] border border-[#222222] hover:border-emerald-500/30 transition-all duration-300 rounded-[28px] p-7 group relative overflow-hidden">
+    <div className="bg-[#0A0A0A] border border-[#222222] hover:border-emerald-500/30 transition-all duration-300 rounded-[28px] p-5 sm:p-7 group relative overflow-hidden">
       {/* Subtle background flair */}
       <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full blur-2xl pointer-events-none -translate-y-1/2 translate-x-1/2 group-hover:bg-emerald-500/10 transition-colors" />
 
       <div className="flex items-center gap-3 mb-5">
-        <Avatar className="w-8 h-8 border border-white/10">
+        <Avatar className="w-8 h-8 border border-white/10 shrink-0">
           <AvatarImage src={collaboration.ownerAvatarUrl} alt={collaboration.repoOwner} />
           <AvatarFallback className="bg-neutral-800 text-xs text-neutral-400">
             {collaboration.repoOwner.substring(0, 2).toUpperCase()}
           </AvatarFallback>
         </Avatar>
-        <div className="text-sm font-medium text-neutral-400">
+        <div className="text-sm font-medium text-neutral-400 truncate min-w-0">
           {collaboration.repoOwner} <span className="text-neutral-600">/</span> <span className="text-neutral-200">{collaboration.repoName}</span>
         </div>
       </div>
 
-      <h3 className="text-xl font-medium text-white mb-2 leading-snug group-hover:text-emerald-400 transition-colors">
+      <h3 className="text-lg sm:text-xl font-medium text-white mb-2 leading-snug group-hover:text-emerald-400 transition-colors">
         {collaboration.title}
       </h3>
       
@@ -47,7 +47,7 @@ export function CollaborationCard({ collaboration }: CollaborationCardProps) {
       </p>
 
       <div className="space-y-4">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <span className="text-xs text-neutral-500 font-medium uppercase tracking-wider">Seeking</span>
           <div className="flex flex-wrap gap-2">
             {collaboration.requestedRoles.map(role => (
@@ -58,8 +58,8 @@ export function CollaborationCard({ collaboration }: CollaborationCardProps) {
           </div>
         </div>
 
-        <div className="flex items-center justify-between pt-5 border-t border-white/[0.04]">
-          <div className="flex items-center gap-4 text-xs text-neutral-500 font-light">
+        <div className="flex items-center justify-between gap-2 flex-wrap pt-5 border-t border-white/[0.04]">
+          <div className="flex items-center gap-3 sm:gap-4 text-xs text-neutral-500 font-light flex-wrap">
             <span className="flex items-center gap-1.5"><Users className="w-3.5 h-3.5" /> {collaboration.activeContributors} Active</span>
             <span className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5" /> {collaboration.timeAgo}</span>
           </div>

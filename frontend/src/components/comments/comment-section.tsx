@@ -101,8 +101,8 @@ export default function CommentSection({ owner, repo, threadId }: { owner: strin
                 <img src={comment.user?.avatar_url || "https://github.com/identicons/user.png"} alt={comment.user?.login} className="w-full h-full object-cover" />
               </div>
 
-              <div className="ml-4">
-                <div className="flex items-center gap-2 mb-1.5">
+              <div className="ml-2 sm:ml-4">
+                <div className="flex items-center gap-2 mb-1.5 flex-wrap">
                   <span className="text-sm font-medium text-neutral-200">{comment.user?.login || "User"}</span>
                   <span className="text-xs text-neutral-500">•</span>
                   <span className="text-xs font-medium text-neutral-500">
@@ -123,7 +123,7 @@ export default function CommentSection({ owner, repo, threadId }: { owner: strin
                   </ReactMarkdown>
                 </div>
 
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 flex-wrap">
                   <button 
                     onClick={() => {
                       setUpvotedComments(prev => {
@@ -163,19 +163,19 @@ export default function CommentSection({ owner, repo, threadId }: { owner: strin
       </div>
       )}
 
-      <div className="mt-8 bg-[#0A0A0A] border border-white/[0.06] rounded-xl p-4">
+      <div className="mt-8 bg-[#0A0A0A] border border-white/[0.06] rounded-xl p-3 sm:p-4">
         <form onSubmit={handleSubmit}>
           <div className="flex items-center gap-2 text-sm text-emerald-400 mb-4 ml-1">
             <span className="font-medium text-white">Add a reply</span>
           </div>
           
-          <div className="flex gap-4">
+          <div className="flex gap-3 sm:gap-4">
             <div className="w-8 h-8 rounded-full shrink-0 overflow-hidden border border-white/[0.1] bg-neutral-800">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={currentUser?.avatarUrl || "https://github.com/identicons/user.png"} alt="You" className="w-full h-full object-cover" />
             </div>
             
-            <div className="flex-1 space-y-3">
+            <div className="flex-1 min-w-0 space-y-3">
               <textarea
                 ref={textareaRef}
                 value={newComment}
@@ -186,12 +186,12 @@ export default function CommentSection({ owner, repo, threadId }: { owner: strin
                 required
               />
               
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between gap-2 flex-wrap">
                 <span className="text-[11px] text-neutral-500 tracking-wide">Markdown supported</span>
-                <div className="flex gap-3">
+                <div className="flex gap-2 sm:gap-3">
                   <button 
                     type="button" 
-                    className="px-4 py-1.5 text-xs font-medium text-[#8A8F98] hover:text-white transition-colors"
+                    className="px-3 sm:px-4 py-1.5 text-xs font-medium text-[#8A8F98] hover:text-white transition-colors"
                     onClick={() => setNewComment("")}
                   >
                     Cancel
@@ -199,7 +199,7 @@ export default function CommentSection({ owner, repo, threadId }: { owner: strin
                   <button 
                     type="submit" 
                     disabled={submitting || !newComment.trim()}
-                    className="flex items-center gap-2 px-5 py-1.5 bg-[#10B981] hover:bg-emerald-400 text-[#04140D] font-semibold rounded-full text-xs transition-all disabled:opacity-50"
+                    className="flex items-center gap-2 px-4 sm:px-5 py-1.5 bg-[#10B981] hover:bg-emerald-400 text-[#04140D] font-semibold rounded-full text-xs transition-all disabled:opacity-50"
                   >
                     {submitting && <Loader2 className="w-3 h-3 animate-spin text-[#04140D]" />}
                     Post Reply

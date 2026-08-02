@@ -67,7 +67,7 @@ function ImportedReposContent() {
           const mappedRepos = data.data.map((repo: APIRepository) => {
             let lang = "Unknown";
             if (repo.languages) {
-              const parsed = typeof repo.languages === 'string' ? JSON.parse(repo.languages) : repo.languages;
+              const parsed = typeof repo.languages === "string" ? JSON.parse(repo.languages) : repo.languages;
               if (parsed && Object.keys(parsed).length > 0) {
                 const sortedLangs = Object.entries(parsed as Record<string, number>).sort((a: [string, number], b: [string, number]) => b[1] - a[1]);
                 lang = sortedLangs[0][0];
@@ -156,8 +156,8 @@ function ImportedReposContent() {
   };
 
   return (
-    <div className="max-w-7xl w-full mx-auto flex flex-col select-none relative space-y-10 pb-16">
-      <div className="absolute top-0 inset-x-0 h-96 bg-gradient-to-b from-emerald-500/5 to-transparent pointer-events-none blur-3xl -z-10" />
+    <div className="max-w-7xl w-full mx-auto flex flex-col select-none relative space-y-6 sm:space-y-8 lg:space-y-10 px-4 sm:px-6 lg:px-8 pb-10 sm:pb-12 lg:pb-16">
+      <div className="absolute top-0 inset-x-0 h-72 sm:h-80 lg:h-96 bg-gradient-to-b from-emerald-500/5 to-transparent pointer-events-none blur-3xl -z-10" />
 
       <PageHeader
         title="Imported Repositories"
@@ -165,38 +165,41 @@ function ImportedReposContent() {
         icon={<BookMarked className="w-5 h-5" />}
       />
 
-      <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <div className="space-y-4 sm:space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
         {loading ? (
-          <div className="flex items-center justify-center py-32">
+          <div className="flex items-center justify-center py-20 sm:py-24 lg:py-32">
             <div className="relative">
-              <div className="w-12 h-12 border-4 border-emerald-500/20 border-t-emerald-500 rounded-full animate-spin"></div>
-              <div className="absolute inset-0 w-12 h-12 bg-emerald-500/10 rounded-full blur-xl animate-pulse"></div>
+              <div className="w-10 h-10 sm:w-12 sm:h-12 border-4 border-emerald-500/20 border-t-emerald-500 rounded-full animate-spin"></div>
+              <div className="absolute inset-0 w-10 h-10 sm:w-12 sm:h-12 bg-emerald-500/10 rounded-full blur-xl animate-pulse"></div>
             </div>
           </div>
         ) : error ? (
           <ErrorState message={error} onRetry={fetchImported} />
         ) : repos.length > 0 ? (
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 pt-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 xl:gap-8 pt-2 sm:pt-4">
             {repos.map((repo) => (
               <RepositoryCard key={repo.id} repo={repo} mode="view" onDelete={handleDelete} />
             ))}
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center py-32 border border-neutral-800/50 rounded-3xl bg-neutral-900/20 backdrop-blur-sm">
-            <BookMarked className="w-12 h-12 text-neutral-700 mb-4" />
-            <p className="text-neutral-300 text-lg font-medium">No imported repositories</p>
-            <p className="text-neutral-500 text-sm mt-2">Head to the GitHub Search menu to explore and import your projects.</p>
+          <div className="flex flex-col items-center justify-center py-20 sm:py-24 lg:py-32 px-4 sm:px-6 border border-neutral-800/50 rounded-2xl sm:rounded-3xl bg-neutral-900/20 backdrop-blur-sm text-center">
+            <BookMarked className="w-10 h-10 sm:w-12 sm:h-12 text-neutral-700 mb-4" />
+            <p className="text-neutral-300 text-base sm:text-lg font-medium">No imported repositories</p>
+            <p className="text-neutral-500 text-sm mt-2 max-w-md">
+              Head to the GitHub Search menu to explore and import your projects.
+            </p>
           </div>
         )}
 
         {!loading && !error && pagination.totalPages > 1 && (
-          <Pagination className="mt-8">
-            <PaginationContent>
+          <Pagination className="mt-6 sm:mt-8 overflow-x-auto">
+            <PaginationContent className="flex-nowrap min-w-max sm:min-w-0">
               <PaginationItem>
                 <PaginationPrevious onClick={() => handlePageChange(pagination.page - 1)} disabled={pagination.page === 1} />
               </PaginationItem>
+
               {getPageNumbers().map((pageNumber, idx) => (
-                <PaginationItem key={idx}>
+                <PaginationItem key={idx} className="hidden sm:inline-flex">
                   {pageNumber === "ellipsis-start" || pageNumber === "ellipsis-end" ? (
                     <PaginationEllipsis />
                   ) : (
@@ -206,6 +209,13 @@ function ImportedReposContent() {
                   )}
                 </PaginationItem>
               ))}
+
+              <PaginationItem className="sm:hidden">
+                <PaginationLink isActive>
+                  {pagination.page} / {pagination.totalPages}
+                </PaginationLink>
+              </PaginationItem>
+
               <PaginationItem>
                 <PaginationNext onClick={() => handlePageChange(pagination.page + 1)} disabled={pagination.page === pagination.totalPages} />
               </PaginationItem>
@@ -220,7 +230,7 @@ function ImportedReposContent() {
 export default function ImportedReposPage() {
   return (
     <Suspense fallback={
-      <div className="flex items-center justify-center h-full">
+      <div className="flex items-center justify-center h-full min-h-[40vh] px-4">
         <div className="w-6 h-6 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
       </div>
     }>

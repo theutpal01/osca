@@ -28,9 +28,9 @@ export function RepositoryFilters({ isOpen, onClose, onApply }: RepositoryFilter
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="bg-neutral-950 border border-white/[0.05] text-white sm:max-w-md rounded-2xl p-6">
+      <DialogContent className="bg-neutral-950 border border-white/[0.05] text-white sm:max-w-md rounded-2xl p-5 sm:p-6">
         <DialogHeader>
-          <DialogTitle className="text-xl font-medium tracking-tight">Filter Repositories</DialogTitle>
+          <DialogTitle className="text-lg sm:text-xl font-medium tracking-tight">Filter Repositories</DialogTitle>
           <DialogDescription className="text-neutral-400">
             Refine your repository recommendations based on your preferences.
           </DialogDescription>
@@ -65,7 +65,7 @@ export function RepositoryFilters({ isOpen, onClose, onApply }: RepositoryFilter
           </div>
         </div>
 
-        <DialogFooter className="mt-2 flex sm:justify-between w-full">
+        <DialogFooter className="mt-2 flex flex-col sm:flex-row sm:justify-between items-stretch gap-3 w-full">
           <Button 
             variant="ghost" 
             onClick={() => { setLanguage(""); setMinStars(""); }}
@@ -74,10 +74,10 @@ export function RepositoryFilters({ isOpen, onClose, onApply }: RepositoryFilter
             Reset
           </Button>
           <div className="flex gap-2">
-            <Button variant="outline" onClick={onClose} className="border-white/[0.05] bg-transparent hover:bg-white/[0.02]">
+            <Button variant="outline" onClick={onClose} className="flex-1 sm:flex-none border-white/[0.05] bg-transparent hover:bg-white/[0.02]">
               Cancel
             </Button>
-            <Button onClick={handleApply} className="bg-emerald-500 hover:bg-emerald-600 text-black">
+            <Button onClick={handleApply} className="flex-1 sm:flex-none bg-emerald-500 hover:bg-emerald-600 text-black">
               Apply Filters
             </Button>
           </div>

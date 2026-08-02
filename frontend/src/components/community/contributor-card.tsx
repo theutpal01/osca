@@ -21,20 +21,20 @@ interface ContributorCardProps {
 
 export function ContributorCard({ contributor }: ContributorCardProps) {
   return (
-    <div className="bg-[#121212] border border-[#333333] hover:border-[#62BE8B]/50 transition-colors duration-300 rounded-[24px] p-6 group">
-      <div className="flex items-start justify-between mb-4">
-        <div className="flex items-center gap-4">
-          <Avatar className="w-12 h-12 border-2 border-white/[0.05]">
+    <div className="bg-[#121212] border border-[#333333] hover:border-[#62BE8B]/50 transition-colors duration-300 rounded-[24px] p-5 sm:p-6 group">
+      <div className="flex items-start justify-between gap-3 mb-4 flex-wrap">
+        <div className="flex items-center gap-3 sm:gap-4 min-w-0">
+          <Avatar className="w-10 h-10 sm:w-12 sm:h-12 border-2 border-white/[0.05] shrink-0">
             <AvatarImage src={contributor.avatarUrl} alt={contributor.name} />
             <AvatarFallback className="bg-neutral-800 text-neutral-400">
               {contributor.name.substring(0, 2).toUpperCase()}
             </AvatarFallback>
           </Avatar>
-          <div>
-            <h3 className="text-lg font-medium text-white group-hover:text-emerald-400 transition-colors">
+          <div className="min-w-0">
+            <h3 className="text-lg font-medium text-white group-hover:text-emerald-400 transition-colors truncate">
               {contributor.name}
             </h3>
-            <p className="text-sm text-neutral-400 font-light">@{contributor.username}</p>
+            <p className="text-sm text-neutral-400 font-light truncate">@{contributor.username}</p>
           </div>
         </div>
         
@@ -48,13 +48,13 @@ export function ContributorCard({ contributor }: ContributorCardProps) {
 
       <div className="space-y-3 mb-6">
         <div className="flex items-center gap-2 text-sm text-neutral-300 font-light">
-          <Code2 className="w-4 h-4 text-neutral-500" />
-          {contributor.role}
+          <Code2 className="w-4 h-4 text-neutral-500 shrink-0" />
+          <span className="truncate">{contributor.role}</span>
         </div>
         {contributor.location && (
           <div className="flex items-center gap-2 text-sm text-neutral-400 font-light">
-            <MapPin className="w-4 h-4 text-neutral-500" />
-            {contributor.location}
+            <MapPin className="w-4 h-4 text-neutral-500 shrink-0" />
+            <span className="truncate">{contributor.location}</span>
           </div>
         )}
       </div>

@@ -41,7 +41,7 @@ export function RepositoryCard({ repo, mode = "view", onAction, onDelete }: Repo
   const isImportMode = mode === "import";
 
   return (
-    <div className="relative overflow-hidden bg-neutral-900/50 backdrop-blur-xl border border-neutral-800/50 hover:border-emerald-500/30 transition-all duration-300 flex flex-col justify-between group p-6 rounded-2xl shadow-xl hover:shadow-emerald-900/20">
+    <div className="relative overflow-hidden bg-neutral-900/50 backdrop-blur-xl border border-neutral-800/50 hover:border-emerald-500/30 transition-all duration-300 flex flex-col justify-between group p-5 sm:p-6 rounded-2xl shadow-xl hover:shadow-emerald-900/20">
       {/* Hover Gradient Edge Highlight */}
       <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-emerald-500/0 group-hover:via-emerald-500/40 to-transparent transition-all duration-500" />
       
@@ -50,15 +50,15 @@ export function RepositoryCard({ repo, mode = "view", onAction, onDelete }: Repo
 
       <div className="space-y-4">
         {/* Header */}
-        <div className="flex items-start justify-between">
-          <a href={repo.url || `https://github.com/${repo.name}`} target="_blank" rel="noopener noreferrer" className="font-medium text-neutral-200 group-hover:text-emerald-400 text-lg flex items-start gap-2 transition-colors pr-2 break-all" title={repo.name}>
+        <div className="flex items-start justify-between gap-2 flex-wrap">
+          <a href={repo.url || `https://github.com/${repo.name}`} target="_blank" rel="noopener noreferrer" className="font-medium text-neutral-200 group-hover:text-emerald-400 text-lg flex items-start gap-2 transition-colors pr-2 break-all min-w-0" title={repo.name}>
             {repo.name}
             <ExternalLink className="w-4 h-4 mt-1 opacity-0 group-hover:opacity-100 text-neutral-500 hover:text-emerald-400 transition-all flex-shrink-0" />
           </a>
           
           {/* Glowing Match Badge */}
           {repo.matchScore !== undefined && (
-            <div className="flex items-center gap-1.5 px-2.5 py-1 bg-emerald-500/[0.08] border border-emerald-500/20 rounded-full whitespace-nowrap">
+            <div className="flex items-center gap-1.5 px-2.5 py-1 bg-emerald-500/[0.08] border border-emerald-500/20 rounded-full whitespace-nowrap shrink-0">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
               <span className="text-[11px] font-medium text-emerald-400 tracking-wide">
                 {repo.matchScore}% Match
@@ -74,8 +74,8 @@ export function RepositoryCard({ repo, mode = "view", onAction, onDelete }: Repo
       </div>
 
       {/* Footer Metrics */}
-      <div className="flex items-center justify-between pt-5 border-t border-neutral-800 mt-5">
-        <div className="flex items-center gap-4 text-xs text-neutral-400 font-light">
+      <div className="flex items-center justify-between gap-3 flex-wrap pt-5 border-t border-neutral-800 mt-5">
+        <div className="flex items-center gap-3 sm:gap-4 text-xs text-neutral-400 font-light flex-wrap">
           {/* Language */}
           {repo.language && (
             <div className="flex items-center gap-1.5">
@@ -99,13 +99,13 @@ export function RepositoryCard({ repo, mode = "view", onAction, onDelete }: Repo
           <button
             onClick={handleAction}
             disabled={isLoading}
-            className="text-xs font-medium bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500 hover:text-neutral-950 px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed z-10 relative"
+            className="text-xs font-medium bg-emerald-500/10 text-emerald-400 hover:bg-emerald-500 hover:text-neutral-950 px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed z-10 relative shrink-0"
           >
             {isLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5" />}
             {isLoading ? "Importing..." : "Import Repo"}
           </button>
         ) : (
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 shrink-0">
             {onDelete && (
               <button
                 onClick={(e) => { e.preventDefault(); onDelete(repo); }}

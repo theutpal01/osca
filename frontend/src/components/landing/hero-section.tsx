@@ -2,7 +2,7 @@ import React from "react";
 
 export default function HeroSection() {
   return (
-    <section id="home" className="relative w-full h-full bg-[#020503] flex flex-col select-none">
+    <section id="home" className="relative w-full min-h-screen bg-[#020503] flex flex-col select-none py-12 md:py-0 justify-center">
       <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
         <div
           className="absolute inset-0 bg-cover bg-center"
@@ -10,18 +10,18 @@ export default function HeroSection() {
         />
       </div>
 
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 md:px-12 flex-1 grid grid-cols-1 lg:grid-cols-2 items-center gap-12 pb-16 pt-28 md:pt-25">
-        <div className="flex flex-col justify-center w-full max-w-[620px] space-y-6">
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 md:px-12 flex-1 grid grid-cols-1 lg:grid-cols-2 items-center gap-12 pb-16 pt-20 md:pt-28">
+        <div className="flex flex-col justify-center w-full max-w-[620px] space-y-6 mx-auto lg:mx-0 text-center lg:text-left">
           <h1 className="text-4xl md:text-5xl lg:text-[56px] font-normal tracking-tight text-[#F0FFF2] leading-[1.15]">
             Lorem Ipsum Dolor sit{" "}
             <span className="font-serif italic text-[#F0FFF2] block mt-2">
               is a dummy text used as a placeholder
             </span>
           </h1>
-          <p className="text-base md:text-lg text-[#F0FFF2] font-normal leading-relaxed max-w-md">
+          <p className="text-base md:text-lg text-[#F0FFF2] font-normal leading-relaxed max-w-md mx-auto lg:mx-0">
             An intelligent matchmaking layer that understands both sides and brings them together faster.
           </p>
-          <div className="pt-2">
+          <div className="pt-2 flex justify-center lg:justify-start">
             <a href="#how-it-works" className="inline-block text-[#F0FFF2] bg-[#3CAE6B] hover:bg-emerald-600 font-semibold px-7 py-3.5 rounded-full text-sm transition-all duration-200 text-center active:scale-95 shadow-lg shadow-emerald-500/10">
               Get Started
             </a>
@@ -29,14 +29,14 @@ export default function HeroSection() {
         </div>
 
         <div className="flex justify-center lg:justify-end w-full">
-          <div className="w-full max-w-[640px] bg-[#020d06] border-10 border-emerald-500/30 rounded-[24px] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9)] grid grid-cols-[160px_1fr] font-sans overflow-hidden">
-            <div className="border-r border border-neutral-800/80 px-3 py-4 flex flex-col gap-4 bg-[#010804]">
+          <div className="w-full max-w-[640px] bg-[#020d06] border-[10px] border-emerald-500/30 rounded-[24px] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9)] grid grid-cols-1 sm:grid-cols-[160px_1fr] font-sans overflow-hidden">
+            <div className="border-b sm:border-b-0 sm:border-r border-neutral-800/80 px-3 py-4 flex sm:flex-col justify-between sm:justify-start gap-4 bg-[#010804]">
               <div className="text-lg font-bold italic text-[#F0FFF2] font-serif pl-2">
                 osca
               </div>
               
-              <div className="flex flex-col gap-1 w-full">
-                <button className="flex items-center gap-2 w-full px-2.5 py-1.5 text-[11px] font-medium text-[#031303] bg-white rounded-lg transition-colors">
+              <div className="flex sm:flex-col gap-1 w-full overflow-x-auto sm:overflow-visible">
+                <button className="flex items-center gap-2 px-2.5 py-1.5 text-[11px] font-medium text-[#031303] bg-white rounded-lg transition-colors whitespace-nowrap">
                   <svg className="w-3 h-3 stroke-current fill-none" viewBox="0 0 24 24" strokeWidth="2">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
                   </svg>
@@ -44,7 +44,7 @@ export default function HeroSection() {
                 </button>
 
                 {["Contributor Profile", "Skill Overview", "Recommendation"].map((tab) => (
-                  <button key={tab} className="flex items-center gap-2 w-full px-2.5 py-1.5 text-[10px] font-medium text-[#F0FFF2] hover:text-white transition-colors text-left">
+                  <button key={tab} className="hidden sm:flex items-center gap-2 w-full px-2.5 py-1.5 text-[10px] font-medium text-[#F0FFF2] hover:text-white transition-colors text-left whitespace-nowrap">
                     <svg className="w-3 h-3 stroke-current fill-none opacity-60" viewBox="0 0 24 24" strokeWidth="2">
                       <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
                     </svg>
@@ -66,7 +66,7 @@ export default function HeroSection() {
                   Your repositories
                 </p>
                 
-                <div className="grid grid-cols-2 gap-2 mb-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-3">
                   <div className="bg-[#020503]/40 border border-white/[0.08] rounded-lg p-2.5 flex flex-col gap-1.5">
                     <div className="w-5 h-5 bg-orange-500/20 text-orange-400 rounded-md flex items-center justify-center">
                       <svg className="w-3 h-3 fill-none stroke-current" viewBox="0 0 24 24" strokeWidth="2">

@@ -157,53 +157,53 @@ export function VisualMap({ folderStructure, dependencies }: VisualMapProps) {
 
   return (
     <div 
-      className={`relative rounded-xl overflow-hidden border border-neutral-800/60 bg-neutral-950/50 transition-all ${isFullscreen ? 'fixed inset-0 z-50 bg-neutral-950' : 'w-full h-[600px]'}`}
+      className={`relative rounded-xl overflow-hidden border border-neutral-800/60 bg-neutral-950/50 transition-all ${isFullscreen ? 'fixed inset-0 z-50 bg-neutral-950' : 'w-full h-[400px] sm:h-[600px]'}`}
       ref={containerRef}
     >
-      <div className="absolute top-4 right-4 z-10 flex gap-2">
+      <div className="absolute top-3 right-3 sm:top-4 sm:right-4 z-10 flex gap-2">
         <button 
           onClick={() => setIsFullscreen(!isFullscreen)}
-          className="p-2.5 bg-neutral-900/80 backdrop-blur border border-neutral-800 rounded-lg shadow-sm hover:bg-neutral-800 text-neutral-400 hover:text-neutral-200 transition-colors"
+          className="p-2 sm:p-2.5 bg-neutral-900/80 backdrop-blur border border-neutral-800 rounded-lg shadow-sm hover:bg-neutral-800 text-neutral-400 hover:text-neutral-200 transition-colors"
         >
           {isFullscreen ? <Minimize size={18} /> : <Maximize size={18} />}
         </button>
       </div>
 
-      <div className="absolute top-4 left-4 z-10 p-4 bg-neutral-900/80 backdrop-blur border border-neutral-800 rounded-xl shadow-lg text-sm text-neutral-300 min-w-[200px]">
-        <div className="font-semibold mb-3 text-neutral-100 flex items-center justify-between">
+      <div className="absolute top-3 left-3 sm:top-4 sm:left-4 z-10 p-3 sm:p-4 bg-neutral-900/80 backdrop-blur border border-neutral-800 rounded-xl shadow-lg text-xs sm:text-sm text-neutral-300 min-w-[160px] sm:min-w-[200px] max-w-[calc(100%-5.5rem)]">
+        <div className="font-semibold mb-2 sm:mb-3 text-neutral-100 flex items-center justify-between">
           Legend & Filters
         </div>
         
         <label className="flex items-center justify-between gap-3 mb-2 cursor-pointer group">
-          <div className="flex items-center gap-3">
-            <div className="w-3 h-3 rounded-full shadow-[0_0_8px_#3b82f6]" style={{backgroundColor: colorMap.tree}}></div> 
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="w-3 h-3 rounded-full shadow-[0_0_8px_#3b82f6] shrink-0" style={{backgroundColor: colorMap.tree}}></div> 
             <span className="group-hover:text-neutral-100 transition-colors">Folders</span>
           </div>
-          <input type="checkbox" checked={showFolders} onChange={(e) => setShowFolders(e.target.checked)} className="accent-emerald-500 w-4 h-4 rounded border-neutral-700 bg-neutral-800" />
+          <input type="checkbox" checked={showFolders} onChange={(e) => setShowFolders(e.target.checked)} className="accent-emerald-500 w-4 h-4 rounded border-neutral-700 bg-neutral-800 shrink-0" />
         </label>
         
         <label className="flex items-center justify-between gap-3 mb-2 cursor-pointer group">
-          <div className="flex items-center gap-3">
-            <div className="w-3 h-3 rounded-full shadow-[0_0_8px_#9ca3af]" style={{backgroundColor: colorMap.blob}}></div> 
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="w-3 h-3 rounded-full shadow-[0_0_8px_#9ca3af] shrink-0" style={{backgroundColor: colorMap.blob}}></div> 
             <span className="group-hover:text-neutral-100 transition-colors">Files</span>
           </div>
-          <input type="checkbox" checked={showFiles} onChange={(e) => setShowFiles(e.target.checked)} className="accent-emerald-500 w-4 h-4 rounded border-neutral-700 bg-neutral-800" />
+          <input type="checkbox" checked={showFiles} onChange={(e) => setShowFiles(e.target.checked)} className="accent-emerald-500 w-4 h-4 rounded border-neutral-700 bg-neutral-800 shrink-0" />
         </label>
 
         <label className="flex items-center justify-between gap-3 mb-2 cursor-pointer group">
-          <div className="flex items-center gap-3">
-            <div className="w-3 h-3 rounded-full shadow-[0_0_8px_#f59e0b]" style={{backgroundColor: colorMap.manifest}}></div> 
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="w-3 h-3 rounded-full shadow-[0_0_8px_#f59e0b] shrink-0" style={{backgroundColor: colorMap.manifest}}></div> 
             <span className="group-hover:text-neutral-100 transition-colors">Manifests</span>
           </div>
-          <input type="checkbox" checked={showDependencies} onChange={(e) => setShowDependencies(e.target.checked)} className="accent-emerald-500 w-4 h-4 rounded border-neutral-700 bg-neutral-800" />
+          <input type="checkbox" checked={showDependencies} onChange={(e) => setShowDependencies(e.target.checked)} className="accent-emerald-500 w-4 h-4 rounded border-neutral-700 bg-neutral-800 shrink-0" />
         </label>
 
         <label className="flex items-center justify-between gap-3 cursor-pointer group">
-          <div className="flex items-center gap-3">
-            <div className="w-3 h-3 rounded-full shadow-[0_0_8px_#10b981]" style={{backgroundColor: colorMap.dependency}}></div> 
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="w-3 h-3 rounded-full shadow-[0_0_8px_#10b981] shrink-0" style={{backgroundColor: colorMap.dependency}}></div> 
             <span className="group-hover:text-neutral-100 transition-colors">Dependencies</span>
           </div>
-          <input type="checkbox" checked={showDependencies} onChange={(e) => setShowDependencies(e.target.checked)} className="accent-emerald-500 w-4 h-4 rounded border-neutral-700 bg-neutral-800" />
+          <input type="checkbox" checked={showDependencies} onChange={(e) => setShowDependencies(e.target.checked)} className="accent-emerald-500 w-4 h-4 rounded border-neutral-700 bg-neutral-800 shrink-0" />
         </label>
       </div>
 

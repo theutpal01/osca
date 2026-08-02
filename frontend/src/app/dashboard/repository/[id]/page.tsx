@@ -124,24 +124,24 @@ export default function RepositoryPage() {
 }
 
   return (
-    <div className="max-w-[1400px] w-full mx-auto px-4 sm:px-6 md:px-8 space-y-12 pb-16 pt-8 relative">
+    <div className="max-w-[1400px] w-full mx-auto px-3 sm:px-6 md:px-8 space-y-8 sm:space-y-12 pb-16 pt-8 relative">
       {/* Immersive background glow */}
       <div className="absolute top-0 inset-x-0 h-[500px] bg-gradient-to-b from-emerald-500/10 via-emerald-500/[0.02] to-transparent pointer-events-none blur-3xl -z-10" />
 
       {/* Header Section */}
-      <div className="relative bg-neutral-900/40 backdrop-blur-2xl border border-neutral-800/60 rounded-3xl p-8 sm:p-10 shadow-2xl overflow-hidden group">
+      <div className="relative bg-neutral-900/40 backdrop-blur-2xl border border-neutral-800/60 rounded-3xl p-5 sm:p-8 md:p-10 shadow-2xl overflow-hidden group">
         <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-emerald-500/30 to-transparent" />
         <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
 
-        <div className="relative z-10 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8">
+        <div className="relative z-10 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 sm:gap-8">
           <div className="space-y-4 max-w-4xl">
-            <h1 className="text-4xl md:text-5xl font-medium tracking-tight text-neutral-100 flex items-center gap-4 break-words">
+            <h1 className="text-2xl sm:text-4xl md:text-5xl font-medium tracking-tight text-neutral-100 flex items-center gap-3 sm:gap-4 break-words">
               {repo.name}
-              <a href={repo.url} target="_blank" rel="noreferrer" className="p-2 rounded-full bg-neutral-800/50 text-neutral-400 hover:text-emerald-400 hover:bg-emerald-500/10 transition-all">
-                <ExternalLink className="w-5 h-5" />
+              <a href={repo.url} target="_blank" rel="noreferrer" className="p-2 rounded-full bg-neutral-800/50 text-neutral-400 hover:text-emerald-400 hover:bg-emerald-500/10 transition-all shrink-0">
+                <ExternalLink className="w-4 h-4 sm:w-5 sm:h-5" />
               </a>
             </h1>
-            <p className="text-neutral-400 text-lg font-light leading-relaxed">
+            <p className="text-neutral-400 text-base sm:text-lg font-light leading-relaxed">
               {repo.description || "No description provided."}
             </p>
             
@@ -160,7 +160,7 @@ export default function RepositoryPage() {
             </div>
           </div>
           
-          <div className="flex flex-col gap-4 min-w-[200px]">
+          <div className="flex flex-col gap-4 w-full lg:w-auto lg:min-w-[200px]">
             <button className="w-full flex items-center justify-center gap-2.5 px-6 py-3.5 bg-emerald-500 hover:bg-emerald-400 text-neutral-950 rounded-xl text-sm font-semibold transition-all shadow-[0_0_20px_rgba(16,185,129,0.3)] hover:shadow-[0_0_30px_rgba(16,185,129,0.5)] transform hover:-translate-y-0.5">
               <ThumbsUp className="w-4 h-4" />
               Like Repository
@@ -186,7 +186,7 @@ export default function RepositoryPage() {
           {(repo.folderStructure || (repo.dependencies && repo.dependencies.length > 0)) && (
             <>
               <div className="flex items-center justify-between">
-                <h2 className="text-xl font-semibold text-neutral-200 flex items-center gap-2">
+                <h2 className="text-lg sm:text-xl font-semibold text-neutral-200 flex items-center gap-2">
                   <Network className="w-5 h-5 text-emerald-500" />
                   Codebase Architecture Map
                 </h2>
@@ -199,7 +199,7 @@ export default function RepositoryPage() {
         {/* Right Column: Insights (takes up 1/3 on xl screens) */}
         <div className="xl:col-span-1 flex flex-col space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-semibold text-neutral-200 flex items-center gap-2">
+            <h2 className="text-lg sm:text-xl font-semibold text-neutral-200 flex items-center gap-2">
               <Activity className="w-5 h-5 text-emerald-500" />
               Repository Insights
             </h2>
@@ -210,9 +210,9 @@ export default function RepositoryPage() {
 
       {/* Discussions Section */}
       <div className="space-y-6">
-        <div className="flex items-center justify-between pb-2 border-b border-neutral-800/50">
-          <h2 className="text-2xl font-medium tracking-tight text-neutral-100 flex items-center gap-3">
-            <MessageSquarePlus className="w-6 h-6 text-emerald-500" />
+        <div className="flex items-center justify-between gap-3 pb-2 border-b border-neutral-800/50 flex-wrap">
+          <h2 className="text-xl sm:text-2xl font-medium tracking-tight text-neutral-100 flex items-center gap-2 sm:gap-3">
+            <MessageSquarePlus className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-500" />
             Discussions
             <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 text-sm font-medium border border-emerald-500/20">
               {threads.length}
@@ -220,7 +220,7 @@ export default function RepositoryPage() {
           </h2>
           <button 
             onClick={() => setIsCreateThreadOpen(true)}
-            className="flex items-center gap-2 px-5 py-2.5 bg-neutral-900 border border-neutral-800 hover:bg-emerald-500/10 hover:border-emerald-500/30 hover:text-emerald-400 text-neutral-300 font-medium rounded-xl text-sm transition-all shadow-lg"
+            className="flex items-center gap-2 px-4 sm:px-5 py-2.5 bg-neutral-900 border border-neutral-800 hover:bg-emerald-500/10 hover:border-emerald-500/30 hover:text-emerald-400 text-neutral-300 font-medium rounded-xl text-sm transition-all shadow-lg"
           >
             <MessageSquarePlus className="w-4 h-4" />
             New Thread
@@ -229,7 +229,7 @@ export default function RepositoryPage() {
 
         <div className="bg-neutral-900/40 backdrop-blur-xl border border-neutral-800/60 rounded-2xl overflow-hidden shadow-xl">
           {threads.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-24 text-center">
+            <div className="flex flex-col items-center justify-center py-16 sm:py-24 text-center px-4">
               <div className="w-16 h-16 bg-neutral-800/50 rounded-2xl flex items-center justify-center mb-6 border border-neutral-700/50">
                 <MessageSquarePlus className="w-8 h-8 text-neutral-500" />
               </div>
@@ -249,12 +249,12 @@ export default function RepositoryPage() {
                 <a 
                   key={thread.id} 
                   href={`/dashboard/repository/${repositoryId}/threads/${thread.id}`}
-                  className="flex flex-col sm:flex-row sm:items-center justify-between p-6 hover:bg-neutral-800/40 transition-colors group relative overflow-hidden"
+                  className="flex flex-col sm:flex-row sm:items-center justify-between p-4 sm:p-6 hover:bg-neutral-800/40 transition-colors group relative overflow-hidden"
                 >
                   <div className="absolute left-0 top-0 bottom-0 w-1 bg-emerald-500 transform scale-y-0 group-hover:scale-y-100 transition-transform origin-center duration-300" />
                   
-                  <div className="flex-1 min-w-0 pr-6 pl-2">
-                    <h3 className="text-lg font-medium text-neutral-200 group-hover:text-emerald-400 transition-colors truncate mb-1.5 flex items-center gap-2">
+                  <div className="flex-1 min-w-0 pr-0 sm:pr-6 pl-2">
+                    <h3 className="text-base sm:text-lg font-medium text-neutral-200 group-hover:text-emerald-400 transition-colors truncate mb-1.5 flex items-center gap-2">
                       {thread.title}
                       {thread.isPR ? (
                         <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex-shrink-0">
@@ -283,7 +283,7 @@ export default function RepositoryPage() {
               ))}
             </div>
             {totalPages > 1 && (
-              <div className="flex items-center justify-between p-4 border-t border-neutral-800/50 bg-neutral-900/20">
+              <div className="flex items-center justify-between gap-2 flex-wrap p-4 border-t border-neutral-800/50 bg-neutral-900/20">
                 <button
                   onClick={() => setPage(p => Math.max(1, p - 1))}
                   disabled={page === 1}

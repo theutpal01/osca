@@ -50,59 +50,55 @@ function LoginContent() {
   }
 
   return (
-    <div className="min-h-[85vh] w-full flex items-center justify-center px-4 select-none relative">
-      {/* Subtle Background Glow */}
-      <div className="absolute right-1/2 translate-x-1/2 top-1/2 -translate-y-1/2 w-[350px] h-[350px] rounded-full bg-emerald-500/[0.03] blur-[100px] pointer-events-none" />
+    <div className="min-h-[85vh] w-full flex items-center justify-center px-4 sm:px-6 lg:px-8 py-8 sm:py-10 select-none relative">
+      <div className="absolute right-1/2 translate-x-1/2 top-1/2 -translate-y-1/2 w-[260px] h-[260px] sm:w-[320px] sm:h-[320px] lg:w-[350px] lg:h-[350px] rounded-full bg-emerald-500/[0.03] blur-[80px] sm:blur-[100px] pointer-events-none" />
 
-      <div className="w-full max-w-[420px] p-8 border border-white/[0.04] rounded-3xl bg-neutral-950/40 backdrop-blur-2xl space-y-8 shadow-2xl z-10 relative flex flex-col items-center text-center">
-        
-        {/* Brand Header Icon */}
-        <div className="p-4 rounded-full bg-emerald-500/5 border border-emerald-500/10 text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.05)]">
-          <Code2 className="w-8 h-8" />
+      <div className="w-full max-w-[420px] p-6 sm:p-8 border border-white/[0.04] rounded-2xl sm:rounded-3xl bg-neutral-950/40 backdrop-blur-2xl space-y-6 sm:space-y-8 shadow-2xl z-10 relative flex flex-col items-center text-center">
+        <div className="p-3 sm:p-4 rounded-full bg-emerald-500/5 border border-emerald-500/10 text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.05)]">
+          <Code2 className="w-7 h-7 sm:w-8 sm:h-8" />
         </div>
 
         <div className="space-y-2">
-          <h1 className="text-3xl font-light tracking-tight text-white leading-none">
+          <h1 className="text-2xl sm:text-3xl font-light tracking-tight text-white leading-none">
             Welcome to <span className="font-serif italic font-medium text-neutral-200">osca</span>
           </h1>
-          <p className="text-xs text-neutral-400 font-light leading-relaxed px-4">
+          <p className="text-xs sm:text-sm text-neutral-400 font-light leading-relaxed px-2 sm:px-4">
             Connect your GitHub account to dynamically match and contribute to recommended open-source projects.
           </p>
         </div>
 
         <div className="w-full flex flex-col gap-4">
-          {/* Error Notification Banner */}
           {errorMessage && (
             <div className="w-full flex items-start gap-3 p-3 text-left bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-xs animate-in fade-in slide-in-from-top-2 duration-300">
               <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
-              <p className="leading-normal">{errorMessage}</p>
+              <p className="leading-normal break-words">{errorMessage}</p>
             </div>
           )}
 
           <div className="w-full">
-          <Button
-            onClick={handleLogin}
-            disabled={isLoading}
-            variant="outline"
-            className="w-full flex items-center justify-center gap-3 h-12 border border-white/[0.06] hover:border-emerald-500/20 bg-neutral-950/60 hover:bg-emerald-500/[0.01] text-white hover:text-emerald-400 font-normal rounded-xl transition-all duration-300 shadow-md group disabled:opacity-50"
-          >
-            {isLoading ? (
-              <div className="w-4 h-4 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
-            ) : (
-              <GithubIcon className="text-neutral-400 group-hover:text-emerald-400 transition-colors" />
-            )}
-            <span>
-              {isRedirecting
-                ? "Connecting to GitHub..."
-                : authLoading
-                ? "Checking session..."
-                : "Continue with GitHub"}
-            </span>
-          </Button>
-        </div>
+            <Button
+              onClick={handleLogin}
+              disabled={isLoading}
+              variant="outline"
+              className="w-full flex items-center justify-center gap-3 h-11 sm:h-12 border border-white/[0.06] hover:border-emerald-500/20 bg-neutral-950/60 hover:bg-emerald-500/[0.01] text-white hover:text-emerald-400 font-normal rounded-xl transition-all duration-300 shadow-md group disabled:opacity-50"
+            >
+              {isLoading ? (
+                <div className="w-4 h-4 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+              ) : (
+                <GithubIcon className="text-neutral-400 group-hover:text-emerald-400 transition-colors" />
+              )}
+              <span>
+                {isRedirecting
+                  ? "Connecting to GitHub..."
+                  : authLoading
+                  ? "Checking session..."
+                  : "Continue with GitHub"}
+              </span>
+            </Button>
+          </div>
         </div>
 
-        <div className="text-[10px] text-neutral-500 font-light leading-normal">
+        <div className="text-[10px] text-neutral-500 font-light leading-normal px-2">
           By signing in, you agree to our Terms of Service <br /> and Privacy Guidelines.
         </div>
       </div>
@@ -113,8 +109,8 @@ function LoginContent() {
 export default function LoginPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-[85vh] w-full flex items-center justify-center px-4">
-        <div className="w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+      <div className="min-h-[85vh] w-full flex items-center justify-center px-4 sm:px-6 lg:px-8">
+        <div className="w-7 h-7 sm:w-8 sm:h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
       </div>
     }>
       <LoginContent />

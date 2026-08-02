@@ -13,7 +13,7 @@ function AuthCallbackContent() {
 
   useEffect(() => {
     if (processed.current) return;
-    
+
     const token = searchParams.get("token");
     const userJson = searchParams.get("user");
 
@@ -23,11 +23,9 @@ function AuthCallbackContent() {
         try {
           parsedUser = JSON.parse(userJson);
         } catch {
-          // If direct parsing fails, the string might be double-encoded
           try {
             parsedUser = JSON.parse(decodeURIComponent(userJson));
           } catch {
-            // Try one more level of decoding if needed
             parsedUser = JSON.parse(decodeURIComponent(decodeURIComponent(userJson)));
           }
         }
@@ -45,8 +43,8 @@ function AuthCallbackContent() {
   }, [searchParams, setAuth, router]);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-black text-white space-y-4">
-      <div className="w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+    <div className="flex flex-col items-center justify-center min-h-screen px-4 sm:px-6 bg-black text-white space-y-4 text-center">
+      <div className="w-7 h-7 sm:w-8 sm:h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
       <p className="text-sm text-neutral-400 font-light">Completing authentication...</p>
     </div>
   );
@@ -55,8 +53,8 @@ function AuthCallbackContent() {
 export default function AuthCallbackPage() {
   return (
     <Suspense fallback={
-      <div className="flex flex-col items-center justify-center min-h-screen bg-black text-white space-y-4">
-        <div className="w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+      <div className="flex flex-col items-center justify-center min-h-screen px-4 sm:px-6 bg-black text-white space-y-4 text-center">
+        <div className="w-7 h-7 sm:w-8 sm:h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
         <p className="text-sm text-neutral-400 font-light">Loading...</p>
       </div>
     }>

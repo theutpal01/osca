@@ -15,7 +15,7 @@ export function Sidebar() {
   ];
 
   return (
-    <aside className="hidden md:flex fixed left-0 top-0 bottom-0 w-64 border-r border-white/[0.05] bg-black flex-col p-8 z-20 select-none">
+    <aside className="hidden md:flex fixed left-0 top-0 bottom-0 w-64 border-r border-white/[0.05] bg-black flex-col p-6 lg:p-8 z-20 select-none">
       {/* Minimal Logo */}
       <div className="text-3xl font-semibold tracking-tight italic text-white font-serif mb-12 mt-4 flex items-center justify-center gap-1.5 w-full">
         osca

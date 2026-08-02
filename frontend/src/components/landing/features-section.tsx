@@ -36,33 +36,33 @@ export default function FeaturesSection() {
 
         <div className="flex flex-col gap-6 md:gap-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 auto-rows-fr max-w-6xl mx-auto w-full">
-            <div className={`${cardBase} min-h-[320px]`} style={cardBg("group-15.png")}>
-              <div className="max-w-[75%] flex flex-col gap-2">
+            <div className={`${cardBase} min-h-[280px] sm:min-h-[320px]`} style={cardBg("group-15.png")}>
+              <div className="max-w-[85%] sm:max-w-[75%] flex flex-col gap-2">
                 <span className="text-xs font-semibold uppercase tracking-wider text-[#031303] block">Step 1</span>
-                <p className="font-medium text-lg md:text-2xl leading-snug">Connect your GitHub or GitLab to securely import your repositories</p>
+                <p className="font-medium text-base sm:text-lg md:text-2xl leading-snug">Connect your GitHub or GitLab to securely import your repositories</p>
               </div>
             </div>
 
-            <div className={`${cardBase} min-h-[320px]`} style={cardBg("group-16.png")}>
-              <div className="max-w-[75%] flex flex-col gap-2">
+            <div className={`${cardBase} min-h-[280px] sm:min-h-[320px]`} style={cardBg("group-16.png")}>
+              <div className="max-w-[85%] sm:max-w-[75%] flex flex-col gap-2">
                 <span className="text-xs font-semibold uppercase tracking-wider text-[#031303] block">Step 2</span>
-                <p className="font-medium text-lg md:text-2xl leading-snug">Our engine scans your contribution history and coding patterns</p>
+                <p className="font-medium text-base sm:text-lg md:text-2xl leading-snug">Our engine scans your contribution history and coding patterns</p>
               </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 auto-rows-fr max-w-6xl mx-auto w-full">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 auto-rows-fr max-w-6xl mx-auto w-full">
             {[
               { title: "Step 3", desc: "Your repositories are analyzed across multiple metrics to understand what they need" },
               { title: "Step 4", desc: "Our matching engine pairs you with projects that align with your skills and interests" },
               { title: "Step 5", desc: "Receive your personalized roadmap and start contributing immediately" }
             ].map((step, i) => (
-              <div key={i} className={`${cardBase} min-h-[360px]`} style={cardBg(`group-${19-i}.png`)}>
+              <div key={i} className={`${cardBase} min-h-[300px] sm:min-h-[360px]`} style={cardBg(`group-${19-i}.png`)}>
                 <div className="max-w-[90%] flex flex-col gap-4">
-                  <span className="text-sm font-semibold uppercase tracking-wider text-[#031303] block">
+                  <span className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-[#031303] block">
                     {step.title}
                   </span>
-                  <p className="font-medium text-xl md:text-2xl leading-tight">
+                  <p className="font-medium text-lg sm:text-xl md:text-2xl leading-tight">
                     {step.desc}
                   </p>
                 </div>

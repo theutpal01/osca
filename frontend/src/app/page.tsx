@@ -1,4 +1,3 @@
-
 import HeroSection from "@/components/landing/hero-section";
 import FeaturesSection from "@/components/landing/features-section";
 import BenefitsSection from "@/components/landing/benefits-section";
@@ -9,7 +8,7 @@ export default function Home() {
     <main className="relative w-full bg-[#020503] antialiased">
       <Navbar />
 
-      <div className="relative h-screen w-full sticky top-0 z-10 overflow-hidden">
+      <div className="relative h-dvh w-full sticky top-0 z-10 overflow-hidden">
         <HeroSection />
       </div>
 

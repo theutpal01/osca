@@ -33,23 +33,23 @@ export function GroupChatPanel({ isOpen, onClose }: GroupChatPanelProps) {
       
       <div className="fixed inset-y-0 right-0 w-full md:w-[450px] bg-[#0A0A0A] border-l border-white/[0.05] shadow-2xl z-50 flex flex-col transform transition-transform duration-300 ease-in-out">
         {/* Header */}
-        <div className="flex items-center justify-between p-5 border-b border-white/[0.05] bg-[#0A0A0A] z-10">
-          <div>
-            <h2 className="text-lg font-medium text-white">Repository Chat</h2>
+        <div className="flex items-center justify-between gap-3 p-4 sm:p-5 border-b border-white/[0.05] bg-[#0A0A0A] z-10">
+          <div className="min-w-0">
+            <h2 className="text-lg font-medium text-white truncate">Repository Chat</h2>
             <p className="text-xs text-neutral-400 font-light flex items-center gap-1.5 mt-0.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" /> 14 Online
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shrink-0" /> 14 Online
             </p>
           </div>
           <button 
             onClick={onClose}
-            className="p-2 rounded-full hover:bg-white/[0.05] text-neutral-400 hover:text-white transition-colors"
+            className="p-2 rounded-full hover:bg-white/[0.05] text-neutral-400 hover:text-white transition-colors shrink-0"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Chat Area */}
-        <div className="flex-1 overflow-y-auto p-5 flex flex-col">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-5 flex flex-col">
           {MOCK_MESSAGES.length > 0 ? (
             <div className="space-y-6">
               {MOCK_MESSAGES.map((msg) => (
@@ -59,7 +59,7 @@ export function GroupChatPanel({ isOpen, onClose }: GroupChatPanelProps) {
                       {msg.user.substring(0,2).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
-                  <div className={`flex flex-col ${msg.isMe ? "items-end" : "items-start"} max-w-[75%]`}>
+                  <div className={`flex flex-col ${msg.isMe ? "items-end" : "items-start"} max-w-[80%] sm:max-w-[75%]`}>
                     <div className="flex items-center gap-2 mb-1.5">
                       <span className="text-xs font-medium text-neutral-300">{msg.user}</span>
                       <span className="text-[10px] text-neutral-500">{msg.time}</span>
@@ -81,7 +81,7 @@ export function GroupChatPanel({ isOpen, onClose }: GroupChatPanelProps) {
         </div>
 
         {/* Input Area */}
-        <div className="p-4 border-t border-white/[0.05] bg-[#0A0A0A]">
+        <div className="p-3 sm:p-4 border-t border-white/[0.05] bg-[#0A0A0A]">
           <form 
             onSubmit={(e) => { e.preventDefault(); setMessage(""); }}
             className="relative flex items-center"

@@ -22,8 +22,8 @@ export default function DashboardLayout({
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen w-screen bg-black">
-        <div className="w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+      <div className="flex items-center justify-center min-h-screen w-screen bg-black px-4">
+        <div className="w-7 h-7 sm:w-8 sm:h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
@@ -36,7 +36,9 @@ export default function DashboardLayout({
     <SidebarProvider>
       <div className="flex bg-black min-h-screen w-screen text-white font-sans">
         <AppSidebar />
-        <main className="flex-1 p-6 min-h-screen flex flex-col">{children}</main>
+        <main className="flex-1 min-h-screen flex flex-col p-4 sm:p-6 lg:p-8">
+          {children}
+        </main>
       </div>
     </SidebarProvider>
   );

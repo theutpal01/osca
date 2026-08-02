@@ -75,14 +75,14 @@ function ImportContent() {
 
   if (!url) {
   return (
-    <div className="max-w-2xl mx-auto mt-20">
+    <div className="max-w-2xl mx-auto mt-20 px-4">
       <ErrorState message="Missing repository URL." />
     </div>
   );
 }
 
   return (
-    <div className="w-full h-[60vh] flex flex-col items-center justify-center text-center space-y-12 max-w-2xl mx-auto z-10 relative">
+    <div className="w-full h-[60vh] flex flex-col items-center justify-center text-center space-y-8 sm:space-y-12 max-w-2xl mx-auto z-10 relative px-4">
       <div className="absolute top-1/2 right-0 w-96 h-96 bg-emerald-500/[0.02] rounded-full blur-3xl pointer-events-none -translate-y-1/2" />
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-emerald-500/[0.02] rounded-full blur-3xl pointer-events-none" />
 
@@ -92,9 +92,9 @@ function ImportContent() {
     onRetry={() => window.location.reload()}
   />
       ) : (
-        <div className="space-y-12 flex flex-col items-center w-full z-10">
+        <div className="space-y-8 sm:space-y-12 flex flex-col items-center w-full z-10">
           <div className="space-y-4">
-            <h1 className="text-4xl md:text-5xl font-light tracking-tight text-white leading-none">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-light tracking-tight text-white leading-none">
               Importing <span className="font-serif italic font-medium text-neutral-200">Repository</span>
             </h1>
             <p className="text-neutral-400 text-sm md:text-base font-light max-w-lg mx-auto">
@@ -102,15 +102,15 @@ function ImportContent() {
             </p>
           </div>
 
-          <div className="relative w-24 h-24 flex items-center justify-center mt-4">
+          <div className="relative w-20 h-20 sm:w-24 sm:h-24 flex items-center justify-center mt-4">
             <div className="absolute inset-0 border-t-2 border-emerald-500/40 rounded-full animate-spin duration-1000"></div>
             <div className="absolute inset-3 border-r-2 border-emerald-400/20 rounded-full animate-spin duration-700 reverse"></div>
             <div className="w-10 h-10 bg-emerald-500/10 rounded-full animate-pulse blur-md"></div>
           </div>
 
-          <div className="inline-flex items-center gap-3 px-5 py-2.5 bg-white/[0.02] border border-white/[0.03] rounded-full backdrop-blur-md">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <p className="text-emerald-400/90 text-sm font-medium tracking-wide">{status}</p>
+          <div className="inline-flex items-center gap-3 px-4 sm:px-5 py-2.5 bg-white/[0.02] border border-white/[0.03] rounded-full backdrop-blur-md max-w-full">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0" />
+            <p className="text-emerald-400/90 text-sm font-medium tracking-wide break-words">{status}</p>
           </div>
         </div>
       )}
