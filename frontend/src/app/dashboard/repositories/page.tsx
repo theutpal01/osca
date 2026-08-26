@@ -252,7 +252,7 @@ function GitHubReposContent() {
       <SearchHeader searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
 
       <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-        <div className="flex items-center justify-between border-b border-neutral-800/50 pb-5 sticky top-0 z-20 shadow-[0_4px_30px_rgba(0,0,0,0.1)]">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-neutral-800/50 pb-5 pt-2 sticky top-0 z-20 bg-black/80 backdrop-blur-md shadow-[0_4px_30px_rgba(0,0,0,0.1)]">
           <div className="flex items-center gap-3 mb-2">
             <label className="flex items-center gap-3 text-sm text-neutral-400 font-medium hover:text-neutral-200 cursor-pointer select-none transition-colors group">
               <div className="relative flex items-center">
