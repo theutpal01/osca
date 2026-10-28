@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import Link from "next/link";
 import { ExternalLink } from "lucide-react";
 import { RepositoryService, StarterIssue } from "@/services/repository.service";
 import { Button } from "@/components/ui/button";
-import { Dither } from "@/components/ui/dither";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Eyebrow, timeAgo } from "@/components/repo-ui";
 import { cn } from "@/lib/utils";
@@ -59,9 +59,7 @@ export function NewcomerPanel({ repositoryId, token, repo }: NewcomerPanelProps)
   ];
 
   return (
-    <div className="relative isolate overflow-hidden rounded-md border border-border bg-card">
-      <Dither cols={40} rows={18} cell={4} direction="radial" peak={0.7} className="absolute -right-6 -top-8 -z-10 text-emerald-500/[0.14]" />
-
+    <div className="overflow-hidden rounded-md border border-border bg-card">
       <div className="flex items-center justify-between px-5 pt-5">
         <h3 className="text-base font-semibold">Start contributing</h3>
         {owner && name && (
@@ -113,10 +111,9 @@ export function NewcomerPanel({ repositoryId, token, repo }: NewcomerPanelProps)
         <ul className="mt-1 px-2 pb-3">
           {issues.map((issue) => (
             <li key={issue.number}>
-              <a
-                href={issue.url}
-                target="_blank"
-                rel="noopener noreferrer"
+              {/* Opens the issue's thread page here, not on GitHub */}
+              <Link
+                href={`/dashboard/repository/${repositoryId}/threads/${issue.number}`}
                 className="flex items-start gap-3 rounded-md px-3 py-2.5 transition-colors hover:bg-muted/50"
               >
                 <span
@@ -130,7 +127,7 @@ export function NewcomerPanel({ repositoryId, token, repo }: NewcomerPanelProps)
                     {issue.assigned ? " · assigned" : ""}
                   </p>
                 </div>
-              </a>
+              </Link>
             </li>
           ))}
         </ul>

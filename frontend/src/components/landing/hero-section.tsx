@@ -1,48 +1,39 @@
-"use client";
-
+import React from "react";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { AnimatedDither } from "@/components/ui/animated-dither";
-import { GithubIcon } from "@/components/icons";
+import { DashboardPreview } from "./dashboard-preview";
 
 export default function HeroSection() {
   return (
-    <section id="home" className="relative isolate overflow-hidden">
-      <AnimatedDither
-        cols={260}
-        rows={130}
-        cell={5}
-        falloff={1.2}
-        peak={0.6}
-        className="absolute left-1/2 top-1/2 -z-10 -translate-x-1/2 -translate-y-1/2 text-emerald-500/[0.12]"
-      />
-      <div className="hero-rise mx-auto flex w-full max-w-3xl flex-col items-center gap-7 px-4 pb-24 pt-20 text-center md:px-6 md:pb-32 md:pt-28">
-        <p className="inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.2em] text-emerald-600 dark:text-emerald-400">
-          <span className="size-1.5 rounded-full bg-emerald-500" aria-hidden />
-          Open-source matchmaking
-        </p>
-        <h1 className="text-balance text-4xl font-light leading-[1.1] tracking-tight sm:text-5xl lg:text-6xl">
-          Find open source projects where your{" "}
-          <span className="font-serif font-medium italic text-emerald-600 dark:text-emerald-400">first PR is welcome.</span>
-        </h1>
-        <p className="max-w-xl text-pretty text-lg leading-relaxed text-muted-foreground">
-          OSCA reads the languages you already write on GitHub, then matches you with active repositories and good
-          first issues, ranked by how friendly they are to newcomers.
-        </p>
-        <div className="flex flex-wrap items-center justify-center gap-3">
-          <Button size="lg" asChild className="h-11">
-            <Link href="/register">
-              <GithubIcon /> Continue with GitHub
+    <section id="home" className="relative flex min-h-svh w-full select-none flex-col overflow-hidden bg-[#020503] md:h-full">
+      <div className="absolute inset-0 pointer-events-none z-0" aria-hidden="true">
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{ backgroundImage: `url('/hero-bg.png')` }}
+        />
+      </div>
+
+      <div // Top padding clears the fixed navbar (h-16)
+        className="relative z-10 mx-auto flex w-full max-w-7xl flex-1 flex-col items-center gap-12 px-4 pb-16 pt-28 md:px-12 lg:grid lg:grid-cols-2 lg:pb-12 lg:pt-24">
+        <div className="flex w-full max-w-[620px] flex-col items-center gap-6 text-center lg:items-start lg:text-left">
+          <h1 className="text-4xl sm:text-5xl lg:text-[56px] font-normal tracking-tight text-white leading-[1.15]">
+            Open source projects{" "}
+            <span className="mt-2 block font-serif italic text-[#F0FFF2]">
+              matched to your skills
+            </span>
+          </h1>
+          <p className="text-base md:text-lg text-[#F0FFF2] font-normal leading-relaxed max-w-md">
+            OSCA reads your GitHub history to learn what you are good at, then matches you with repositories and beginner-friendly issues, plus a roadmap to your first pull request.
+          </p>
+          <div className="pt-2">
+            <Link href="/register" className="inline-flex h-11 items-center rounded-md bg-[#3CAE6B] px-6 text-sm font-semibold text-white transition-colors hover:bg-[#349a5e]">
+              Get started
             </Link>
-          </Button>
-          <Button size="lg" variant="outline" asChild className="h-11">
-            <a href="#how-it-works">
-              See how it works <ArrowRight />
-            </a>
-          </Button>
+          </div>
         </div>
-        <p className="text-xs text-muted-foreground">Free and open source. No access to your private repositories.</p>
+
+        <div className="flex w-full justify-center lg:justify-end" aria-hidden="true">
+          <DashboardPreview />
+        </div>
       </div>
     </section>
   );

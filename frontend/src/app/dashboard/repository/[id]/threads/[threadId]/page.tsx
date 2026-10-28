@@ -7,14 +7,12 @@ import { toast } from "sonner";
 import { useAuth } from "@/context/auth-context";
 import { ThreadService } from "@/services/thread.service";
 import { RepositoryService } from "@/services/repository.service";
-import { ArrowRight, Check, CircleDot, GitBranch, GitPullRequest, Link2 } from "lucide-react";
+import { ArrowRight, Check, CircleDot, GitBranch, GitPullRequest, Info, Link2 } from "lucide-react";
 import { ErrorState } from "@/components/ui/error-state";
 import { PageContainer } from "@/components/ui/page-container";
 import { Button } from "@/components/ui/button";
-import { Dither } from "@/components/ui/dither";
-import { DitheredImage, githubAvatarUrl } from "@/components/ui/dithered-image";
-import { Eyebrow, StatusPill, timeAgo } from "@/components/repo-ui";
-import CommentSection from "@/components/comments/comment-section";
+import { StatusPill, timeAgo } from "@/components/repo-ui";
+import CommentSection, { UserAvatar } from "@/components/comments/comment-section";
 import { GithubBody } from "@/components/markdown-lazy";
 import { Reactions, type ReactionRollup } from "@/components/reactions";
 import { GithubReconnectNotice } from "@/components/github-reconnect-notice";
@@ -23,6 +21,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { useBreadcrumbLabel } from "@/components/breadcrumbs";
 import { ThreadSkeleton } from "@/components/skeletons";
 import { useStickyEnd } from "@/hooks/use-sticky-end";
+import { GithubUserLink, LabelChip, RefLink, githubRepoUrl, type ThreadActivity } from "@/components/threads/thread-activity";
 
 interface ThreadDetail {
   id?: string | number;
@@ -41,6 +40,17 @@ interface ThreadDetail {
   [key: string]: unknown;
 }
 
+/** Small uppercase heading with an emerald icon, used at the top of side cards */
+function CardHeading({ icon: Icon, children }: { icon: React.ComponentType<{ className?: string }>; children: React.ReactNode }) {
+  return (
+    <h2 className="flex items-center gap-2 text-xs font-medium uppercase tracking-wider text-muted-foreground">
+      <Icon className="size-3.5 text-emerald-600 dark:text-emerald-400" />
+      {children}
+    </h2>
+  );
+}
+
+
 export default function ThreadPage() {
   const params = useParams();
   const repositoryId = params.id as string;
@@ -51,6 +61,7 @@ export default function ThreadPage() {
   const [thread, setThread] = useState<ThreadDetail | null>(null);
   const [repoDetails, setRepoDetails] = useState<{owner: string, name: string} | null>(null);
   const [relatedThreads, setRelatedThreads] = useState<ThreadDetail[]>([]);
+  const [activity, setActivity] = useState<ThreadActivity | null>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [prData, setPrData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -73,6 +84,11 @@ export default function ThreadPage() {
 
         const threadRes = await ThreadService.getThread(owner, repo, threadId, token);
         setThread(threadRes.data);
+
+        // Timeline events and review threads load beside the rest; the page works without them
+        ThreadService.getActivity(owner, repo, threadId, token)
+          .then((res) => setActivity(res.data ?? null))
+          .catch(() => setActivity(null));
 
         if (threadRes.data?.pull_request) {
           try {
@@ -139,20 +155,36 @@ export default function ThreadPage() {
     }
   };
 
-  const headerDither = (
-    <Dither cols={110} rows={34} cell={5} direction="radial" peak={0.75} className="text-emerald-500/[0.16]" />
-  );
   const htmlUrl = typeof thread.html_url === "string" ? thread.html_url : undefined;
   const assignees = Array.isArray(thread.assignees) ? (thread.assignees as { login: string }[]) : [];
   const milestone = (thread.milestone as { title?: string } | null)?.title;
+  const milestoneUrl = (thread.milestone as { html_url?: string } | null)?.html_url;
+  const repoFullName = `${repoDetails.owner}/${repoDetails.name}`;
+  // A fork's branch lives in the fork, so link it there
+  const headRepo: string = prData?.head?.repo?.full_name ?? repoFullName;
 
   const details: { label: string; value: React.ReactNode }[] = [
-    { label: "Author", value: authorLogin ?? "Unknown" },
+    { label: "Author", value: <GithubUserLink login={authorLogin} /> },
     { label: "Opened", value: timeAgo(thread.created_at) },
     ...(thread.updated_at ? [{ label: "Updated", value: timeAgo(thread.updated_at) }] : []),
     ...(commentCount !== null ? [{ label: "Comments", value: commentCount }] : []),
-    ...(assignees.length > 0 ? [{ label: "Assignees", value: assignees.map((a) => a.login).join(", ") }] : []),
-    ...(milestone ? [{ label: "Milestone", value: milestone }] : []),
+    ...(assignees.length > 0
+      ? [{
+          label: "Assignees",
+          value: assignees.map((a, i) => (
+            <React.Fragment key={a.login}>
+              {i > 0 && ", "}
+              <GithubUserLink login={a.login} />
+            </React.Fragment>
+          )),
+        }]
+      : []),
+    ...(milestone
+      ? [{
+          label: "Milestone",
+          value: milestoneUrl ? <a href={milestoneUrl} target="_blank" rel="noopener noreferrer" className="hover:underline">{milestone}</a> : milestone,
+        }]
+      : []),
     ...(isPR && typeof prData?.commits === "number" ? [{ label: "Commits", value: prData.commits }] : []),
     ...(isPR && typeof prData?.changed_files === "number"
       ? [{
@@ -170,20 +202,10 @@ export default function ThreadPage() {
 
   return (
     <PageContainer>
-      {/* Header: status, title, meta; actions on the right */}
-      <header className="relative isolate flex flex-col gap-6">
-        <div className="pointer-events-none absolute -right-6 -top-8 -z-10 [mask-image:radial-gradient(closest-side,black_40%,transparent)]">
-          <DitheredImage
-            src={githubAvatarUrl(repoDetails.owner, 160)}
-            cols={64}
-            cell={5}
-            className="text-emerald-500/[0.18]"
-            fallback={headerDither}
-          />
-        </div>
-
-        <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
-          <div className="min-w-0 space-y-3">
+      {/* Header card: status, title, meta; actions on the right */}
+      <header className="rounded-md border border-border bg-card p-5 sm:p-6">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between lg:gap-6">
+          <div className="flex min-w-0 flex-col gap-3">
             <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
               {isMerged ? (
                 <StatusPill>Merged</StatusPill>
@@ -194,19 +216,24 @@ export default function ThreadPage() {
               ) : (
                 <StatusPill>Open</StatusPill>
               )}
-              <span className="inline-flex items-center gap-1.5">
-                {isPR ? <GitPullRequest className="size-3.5" /> : <CircleDot className="size-3.5" />}
+              <span className="inline-flex items-center gap-1.5 rounded-md border border-border px-2 py-1 text-[11px] font-medium">
+                {isPR ? <GitPullRequest className="size-3" /> : <CircleDot className="size-3" />}
                 {isPR ? "Pull request" : "Issue"}
               </span>
             </div>
 
-            <h1 className="max-w-3xl break-words text-2xl font-semibold leading-snug tracking-tight md:text-3xl">
+            <h1 className="max-w-3xl break-words text-xl font-semibold leading-snug tracking-tight md:text-2xl">
               {thread.title}{" "}
               <span className="font-normal text-muted-foreground tabular-nums">#{thread.number ?? threadId}</span>
             </h1>
 
             <p className="flex flex-wrap items-center gap-x-1.5 gap-y-1 text-sm text-muted-foreground">
-              {authorLogin && <span className="font-medium text-foreground">{authorLogin}</span>}
+              {authorLogin && (
+                <>
+                  <UserAvatar login={authorLogin} avatarUrl={thread.user?.avatar_url} className="mr-0.5 size-5 text-[9px]" />
+                  <GithubUserLink login={authorLogin} />
+                </>
+              )}
               <span>opened this {timeAgo(thread.created_at)}</span>
               {commentCount !== null && (
                 <>
@@ -217,11 +244,11 @@ export default function ThreadPage() {
             </p>
 
             {isPR && baseRef && headRef && (
-              <p className="flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground">
+              <p className="flex min-w-0 flex-wrap items-center gap-1.5 text-xs text-muted-foreground">
                 <GitBranch className="size-3.5" />
-                <code className="rounded-sm bg-muted px-1.5 py-0.5 font-mono text-foreground">{headRef}</code>
+                <a href={githubRepoUrl(headRepo, `/tree/${encodeURIComponent(headRef)}`)} target="_blank" rel="noopener noreferrer" className="max-w-full truncate rounded-md border border-border bg-background px-1.5 py-0.5 font-mono text-foreground transition-colors hover:border-foreground/30">{headRef}</a>
                 <ArrowRight className="size-3" />
-                <code className="rounded-sm bg-muted px-1.5 py-0.5 font-mono text-foreground">{baseRef}</code>
+                <a href={githubRepoUrl(repoFullName, `/tree/${encodeURIComponent(baseRef)}`)} target="_blank" rel="noopener noreferrer" className="max-w-full truncate rounded-md border border-border bg-background px-1.5 py-0.5 font-mono text-foreground transition-colors hover:border-foreground/30">{baseRef}</a>
               </p>
             )}
           </div>
@@ -244,23 +271,22 @@ export default function ThreadPage() {
             )}
           </div>
         </div>
-
-        <div className="h-px bg-border" />
       </header>
 
       <div className="grid items-start gap-6 lg:grid-cols-3">
         <div className="flex min-w-0 flex-col gap-6 lg:col-span-2">
           <article className="overflow-hidden rounded-md border border-border bg-card">
-            <div className="flex items-center gap-2 border-b border-border px-5 py-3 text-sm">
-              <span className="font-medium">{authorLogin ?? "Unknown"}</span>
-              <span className="text-muted-foreground">wrote {timeAgo(thread.created_at)}</span>
+            <div className="flex min-w-0 items-center gap-2.5 border-b border-border px-5 py-3 text-sm sm:px-6">
+              <UserAvatar login={authorLogin} avatarUrl={thread.user?.avatar_url} className="size-6 text-[10px]" />
+              <GithubUserLink login={authorLogin} className="truncate" />
+              <span className="shrink-0 text-xs text-muted-foreground">wrote {timeAgo(thread.created_at)}</span>
               {typeof thread.author_association === "string" && thread.author_association !== "NONE" && (
-                <span className="ml-auto rounded-md border border-border bg-card px-1.5 py-0.5 text-[11px] capitalize text-muted-foreground">
+                <span className="ml-auto shrink-0 rounded-md border border-border px-1.5 py-0.5 text-[11px] capitalize text-muted-foreground">
                   {thread.author_association.toLowerCase().replace(/_/g, " ")}
                 </span>
               )}
             </div>
-            <div className="flex flex-col gap-4 px-5 py-4">
+            <div className="flex flex-col gap-5 p-5 sm:p-6">
               {thread.body ? (
                 <GithubBody html={thread.body_html} markdown={thread.body} />
               ) : (
@@ -275,50 +301,62 @@ export default function ThreadPage() {
             </div>
           </article>
 
-          <CommentSection owner={repoDetails.owner} repo={repoDetails.name} threadId={threadId} />
+          <CommentSection
+            owner={repoDetails.owner}
+            repo={repoDetails.name}
+            threadId={threadId}
+            repositoryId={repositoryId}
+            activity={activity}
+          />
         </div>
 
         {/* Pinned beside the issue and comments; when taller than the screen it scrolls to its end first (desktop only) */}
-        <aside ref={sidebar.ref} style={{ top: sidebar.top }} className="flex min-w-0 flex-col gap-6 lg:sticky">
+        <aside ref={sidebar.ref} style={{ top: sidebar.top }} className="flex min-w-0 flex-col gap-4 lg:sticky">
 
-          <div className="overflow-hidden rounded-md border border-border bg-card">
-            <div className="border-b border-border px-5 py-3.5">
-              <Eyebrow>Details</Eyebrow>
-            </div>
-            <dl className="divide-y divide-border text-sm">
+          <div className="flex flex-col gap-4 rounded-md border border-border bg-card p-5">
+            <CardHeading icon={Info}>Details</CardHeading>
+            <dl className="flex flex-col gap-3 text-sm">
               {details.map((d) => (
-                <div key={d.label} className="flex items-baseline justify-between gap-4 px-5 py-2.5">
-                  <dt className="text-muted-foreground">{d.label}</dt>
+                <div key={d.label} className="flex items-baseline justify-between gap-4">
+                  <dt className="shrink-0 text-muted-foreground">{d.label}</dt>
                   <dd className="min-w-0 truncate text-right font-medium">{d.value}</dd>
                 </div>
               ))}
             </dl>
             {thread.labels && thread.labels.length > 0 && (
-              <div className="flex flex-col gap-2 border-t border-border px-5 py-3.5">
+              <div className="flex flex-col gap-2 border-t border-border pt-4">
                 <span className="text-sm text-muted-foreground">Labels</span>
                 <div className="flex flex-wrap gap-1.5">
-                  {thread.labels.map((label) => (
-                    <span key={label.name} className="inline-flex items-center gap-1.5 rounded-md border border-border bg-background px-2 py-0.5 text-xs">
-                      <span className="size-2 rounded-full" style={{ backgroundColor: `#${label.color}` }} aria-hidden />
-                      {label.name}
-                    </span>
-                  ))}
+                  {thread.labels.map((label) => <LabelChip key={label.name} name={label.name} color={label.color} repoFullName={repoFullName} />)}
                 </div>
+              </div>
+            )}
+            {/* Issue: pull requests that will close it. Pull request: issues it closes. */}
+            {activity && activity.linked.length > 0 && (
+              <div className="flex flex-col gap-2 border-t border-border pt-4">
+                <span className="text-sm text-muted-foreground">Development</span>
+                <ul className="flex flex-col gap-2 text-sm">
+                  {activity.linked.map((ref) => (
+                    <li key={`${ref.repo}#${ref.number}`}>
+                      <RefLink refItem={ref} repoFullName={repoFullName} repositoryId={repositoryId} />
+                    </li>
+                  ))}
+                </ul>
               </div>
             )}
           </div>
 
           {relatedThreads.length > 0 && (
-            <div className="overflow-hidden rounded-md border border-border bg-card">
-              <div className="border-b border-border px-5 py-3.5">
-                <Eyebrow>More open issues</Eyebrow>
+            <div className="flex flex-col gap-3 rounded-md border border-border bg-card py-5">
+              <div className="px-5">
+                <CardHeading icon={CircleDot}>More open issues</CardHeading>
               </div>
-              <ul className="divide-y divide-border">
+              <ul className="flex flex-col">
                 {relatedThreads.map((rt) => (
                   <li key={rt.number}>
                     <Link
                       href={`/dashboard/repository/${repositoryId}/threads/${rt.number}`}
-                      className="flex items-start gap-2.5 px-5 py-3 transition-colors hover:bg-muted/40"
+                      className="group flex items-start gap-2.5 px-5 py-2 transition-colors hover:bg-muted/40"
                       title={rt.title}
                     >
                       {rt.pull_request ? (
@@ -327,8 +365,8 @@ export default function ThreadPage() {
                         <CircleDot className="mt-0.5 size-3.5 shrink-0 text-emerald-600 dark:text-emerald-400" />
                       )}
                       <span className="min-w-0">
-                        <span className="line-clamp-2 text-sm font-medium">{rt.title}</span>
-                        <span className="mt-0.5 block text-xs text-muted-foreground tabular-nums">
+                        <span className="line-clamp-2 text-sm text-muted-foreground transition-colors group-hover:text-foreground">{rt.title}</span>
+                        <span className="mt-0.5 block text-xs text-muted-foreground/70 tabular-nums">
                           #{rt.number} · {timeAgo(rt.created_at)}
                         </span>
                       </span>
