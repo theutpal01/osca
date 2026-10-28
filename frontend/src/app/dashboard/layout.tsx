@@ -7,9 +7,14 @@ import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/s
 import { Spinner } from "@/components/ui/spinner";
 import { AppSidebar } from "@/components/app-sidebar";
 import { AppBreadcrumbs, BreadcrumbProvider } from "@/components/breadcrumbs";
+import dynamic from "next/dynamic";
+import { GithubReconnectBanner } from "@/components/github-reconnect-banner";
+
+// Only people who haven't onboarded yet download the dialog
+const OnboardingDialog = dynamic(() => import("@/components/onboarding-dialog").then((m) => m.OnboardingDialog), { ssr: false });
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const { token, loading } = useAuth();
+  const { token, loading, user } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
@@ -33,11 +38,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   return (
     <SidebarProvider>
       <AppSidebar />
+      {user && user.onboardedAt === null && <OnboardingDialog />}
       <SidebarInset>
         {/* Phones only: the sidebar is a drawer there, so it needs an opener */}
         <header className="sticky top-0 z-20 flex h-14 shrink-0 items-center border-b bg-background px-4 md:hidden">
           <SidebarTrigger className="-ml-1" />
         </header>
+        <GithubReconnectBanner />
         <BreadcrumbProvider>
           <div className="mx-auto w-full max-w-7xl px-4 md:px-6">
             <AppBreadcrumbs />

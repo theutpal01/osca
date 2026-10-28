@@ -17,6 +17,13 @@ import {
   noopProgress
 } from '../lib/github'
 import { IGNORED_DIRS, IGNORED_FILES, GOOD_FIRST_ISSUE_LABELS, HELP_WANTED_LABELS } from '../lib/github/utils/constants'
+import { extractKeywords } from '../lib/text/keywords'
+
+// What the project is about, from its topics, description and README (one call)
+const fetchKeywords = async (owner: string, repo: string, topics: string[], description: string | null, token: string): Promise<string[]> => {
+  const readme = await githubTryGetRaw(`/repos/${owner}/${repo}/readme`, token).catch(() => null)
+  return extractKeywords({ topics, description, readme })
+}
 
 interface RepoAnalysis {
   name: string
@@ -57,6 +64,62 @@ type Approachability = {
   goodFirstIssueCount: number
   helpWantedCount: number
   hasContributingGuide: boolean
+  outsidePrMergeRate: number | null
+  outsidePrsMerged90d: number | null
+  maintainerResponseHours: number | null
+  unclaimedStarterIssues: number | null
+}
+
+// People on the team; everyone else counts as an outside contributor
+const TEAM = new Set(['OWNER', 'MEMBER', 'COLLABORATOR'])
+const DAY_MS = 24 * 60 * 60 * 1000
+
+type Author = { __typename?: string } | null
+type SignalNodes = {
+  closedPrs?: { nodes?: Array<{ authorAssociation: string; author?: Author; merged: boolean; closedAt: string | null }> }
+  recentIssues?: { nodes?: Array<{ authorAssociation: string; author?: Author; createdAt: string; comments?: { nodes?: Array<{ authorAssociation: string; createdAt: string }> } }> }
+  starters?: { nodes?: Array<{ assignees?: { totalCount: number }; closedByPullRequestsReferences?: { totalCount: number } }> }
+}
+
+const median = (values: number[]): number | null => {
+  if (values.length === 0) return null
+  const sorted = [...values].sort((a, b) => a - b)
+  const mid = Math.floor(sorted.length / 2)
+  return sorted.length % 2 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2
+}
+
+// Whether newcomers actually succeed: merged outside PRs, maintainer replies to
+// outsiders' issues, and starter issues still free to pick up
+// Dependabot, Renovate and other bots aren't newcomers
+const isBot = (author?: Author) => author?.__typename === 'Bot'
+const UNANSWERED_CAP_HOURS = 14 * 24
+// An unanswered issue younger than this says nothing yet about responsiveness
+const UNANSWERED_MIN_AGE_HOURS = 3 * 24
+
+const newcomerSignals = (repository: SignalNodes) => {
+  const outsidePrs = (repository.closedPrs?.nodes ?? []).filter(pr => !TEAM.has(pr.authorAssociation) && !isBot(pr.author))
+  const merged = outsidePrs.filter(pr => pr.merged)
+  const since90d = Date.now() - 90 * DAY_MS
+
+  const outsideIssues = (repository.recentIssues?.nodes ?? []).filter(issue => !TEAM.has(issue.authorAssociation) && !isBot(issue.author))
+  // Hours until a maintainer replied; unanswered ones count as their age (capped
+  // at two weeks), and very recent unanswered ones are left out
+  const responseHours = outsideIssues.flatMap(issue => {
+    const reply = (issue.comments?.nodes ?? []).find(c => TEAM.has(c.authorAssociation))
+    if (reply) return [(Date.parse(reply.createdAt) - Date.parse(issue.createdAt)) / 3_600_000]
+    const ageHours = (Date.now() - Date.parse(issue.createdAt)) / 3_600_000
+    return ageHours < UNANSWERED_MIN_AGE_HOURS ? [] : [Math.min(ageHours, UNANSWERED_CAP_HOURS)]
+  })
+  // Fewer than 3 data points says little either way
+  const starters = repository.starters?.nodes
+  return {
+    outsidePrMergeRate: outsidePrs.length >= 3 ? merged.length / outsidePrs.length : null,
+    outsidePrsMerged90d: repository.closedPrs ? merged.filter(pr => pr.closedAt && Date.parse(pr.closedAt) >= since90d).length : null,
+    maintainerResponseHours: responseHours.length >= 3 ? median(responseHours) : null,
+    unclaimedStarterIssues: starters
+      ? starters.filter(i => (i.assignees?.totalCount ?? 0) === 0 && (i.closedByPullRequestsReferences?.totalCount ?? 0) === 0).length
+      : null
+  }
 }
 
 const CONTRIBUTING_PATHS = ['CONTRIBUTING.md', '.github/CONTRIBUTING.md', 'docs/CONTRIBUTING.md', 'CONTRIBUTING.rst', 'CONTRIBUTING']
@@ -75,6 +138,15 @@ const fetchApproachability = async (owner: string, repo: string, token: string):
         goodFirst: issues(states: OPEN, labels: $gfi) { totalCount }
         helpWanted: issues(states: OPEN, labels: $hw) { totalCount }
         ${contributingFields}
+        closedPrs: pullRequests(last: 50, states: [MERGED, CLOSED], orderBy: { field: UPDATED_AT, direction: ASC }) {
+          nodes { authorAssociation author { __typename } merged closedAt }
+        }
+        recentIssues: issues(last: 20, orderBy: { field: CREATED_AT, direction: ASC }) {
+          nodes { authorAssociation author { __typename } createdAt comments(first: 10) { nodes { authorAssociation createdAt } } }
+        }
+        starters: issues(first: 50, states: OPEN, labels: $gfi) {
+          nodes { assignees { totalCount } closedByPullRequestsReferences(first: 1, includeClosedPrs: false) { totalCount } }
+        }
       }
     }
   `
@@ -87,7 +159,8 @@ const fetchApproachability = async (owner: string, repo: string, token: string):
     return {
       goodFirstIssueCount: Number(repository.goodFirst?.totalCount) || 0,
       helpWantedCount: Number(repository.helpWanted?.totalCount) || 0,
-      hasContributingGuide: CONTRIBUTING_PATHS.some((_path, i) => repository[`c${i}`] != null)
+      hasContributingGuide: CONTRIBUTING_PATHS.some((_path, i) => repository[`c${i}`] != null),
+      ...newcomerSignals(repository as SignalNodes)
     }
   } catch (err) {
     console.error(`[RepoService] Approachability fetch failed for ${owner}/${repo}:`, err)
@@ -252,9 +325,13 @@ const analyzeRepository = async (
     }
 
     await onProgress(50, 'Refreshing contributor-friendliness signals...')
-    const [meta, approachability] = await Promise.all([
+    const [meta, approachability, keywords] = await Promise.all([
       githubGetJson<GithubRepoResponse>(`/repos/${owner}/${repo}`, accessToken),
-      fetchApproachability(owner, repo, accessToken)
+      fetchApproachability(owner, repo, accessToken),
+      // Keywords rarely change: only fetched for repos that don't have them yet
+      existingRepo.keywords.length === 0
+        ? fetchKeywords(owner, repo, existingRepo.topics, existingRepo.description, accessToken)
+        : Promise.resolve(null)
     ])
     const refreshed = await prisma.repository.update({
       where: { id: existingRepo.id },
@@ -264,7 +341,8 @@ const analyzeRepository = async (
         openIssuesCount: Number(meta.open_issues_count) || 0,
         archived: !!meta.archived,
         pushedAt: meta.pushed_at ? new Date(meta.pushed_at) : null,
-        ...(approachability && { ...approachability, approachabilityUpdatedAt: new Date() })
+        ...(approachability && { ...approachability, approachabilityUpdatedAt: new Date() }),
+        ...(keywords && { keywords })
       }
     })
     await onProgress(100, 'Repository already analyzed; signals refreshed.')
@@ -273,7 +351,10 @@ const analyzeRepository = async (
 
   const analysis = await analyzeGithubRepo(owner, repo, accessToken, onProgress)
   await onProgress(78, 'Checking contributor-friendliness...')
-  const approachability = await fetchApproachability(owner, repo, accessToken)
+  const [approachability, keywords] = await Promise.all([
+    fetchApproachability(owner, repo, accessToken),
+    fetchKeywords(owner, repo, analysis.topics, analysis.description, accessToken)
+  ])
   await onProgress(80, 'Saving repository data...')
 
   // Only persist folderStructure and dependencies if they are actually populated
@@ -298,6 +379,7 @@ const analyzeRepository = async (
     frameworks: analysis.frameworks,
     techStack: analysis.techStack,
     topics: analysis.topics,
+    keywords,
     ciCd: analysis.ciCd,
     stars: analysis.stars,
     forks: analysis.forks,

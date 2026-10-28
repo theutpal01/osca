@@ -11,6 +11,7 @@ import { RequestWithUser } from '../../middlewares/auth.middleware'
 import { selfUserSelect } from '../../utils/user-response'
 import { encryptToken } from '../../lib/crypto/token-cipher'
 import { redisClient } from '../../utils/redis-client'
+import { JobEnqueueService } from '../../services/job-enqueue.service'
 
 // read:user + user:email for the profile; public_repo so issues, comments and
 // reactions can be posted to public repositories as the user. No private repo access.
@@ -112,6 +113,10 @@ const handleGithubCallback = asyncHandler(async (req: Request, res: Response) =>
       where: { id: existingOauth.id },
       data: { accessToken: encryptToken(accessToken) }
     })
+    // A fresh token: stop asking them to reconnect
+    if (existingOauth.user.githubTokenInvalidAt) {
+      await prisma.user.update({ where: { id: existingOauth.userId }, data: { githubTokenInvalidAt: null } })
+    }
     userRecord = existingOauth.user
   } else {
     // Never link to an existing user by email: emails aren't verified on our
@@ -142,6 +147,16 @@ const handleGithubCallback = asyncHandler(async (req: Request, res: Response) =>
   }
 
   const user = userRecord
+
+  // Analyze new accounts (and older ones never analyzed) straight away, so
+  // recommendations are personal by the time the user lands. A queued job for
+  // the same user is reused; failing to queue never blocks sign-in.
+  const analyzed = await prisma.contributorProfile.findUnique({ where: { userId: user.id }, select: { id: true } })
+  if (!analyzed) {
+    JobEnqueueService.enqueueContributorAnalysis(user.id).catch((error) => {
+      console.error(`[Auth] Failed to queue profile analysis for user ${user.id}:`, error)
+    })
+  }
 
   const token = jwt.sign(
     { id: user.id, username: user.username, email: user.email },
